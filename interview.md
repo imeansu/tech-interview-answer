@@ -171,3 +171,16 @@ Context Switching
         - 예) 정적 변수를 사용하거나 반환하면 안되고 호출 시 제공된 매개변수만으로 동작해야 한다
     - 따라서, Reentrant하다면 Thread-safe하지만 그 역은 성립하지 않는다
 
+## TCP UDP
+
+TCP(Transmission Control Protocol, 전송제어 프로토콜)
+
+- 대부분 신뢰성과 순차적인 전달을 필요로 한다
+- 신뢰성이 없는 인터넷을 통해 종단간에 신뢰성 있는 바이트 스트림을 전송하도록 특별히 설계
+- 송신자와 수신자 모두가 소켓이라고 부르는 종단점을 생성
+- 연결 설정은 3-way handshake를 통해 이루어짐
+- 모든 TCP 연결은
+    - 전이중(full-duplex, 전송이 양방향으로 동시에 일어날 수 있음 )
+    - 점대점(point to point, 각 연결이 정확히 2개의 종단점을 가지고 있음)
+
+UDP(User Datagram Protocol, 사용자 데이터그램 프로토콜)
