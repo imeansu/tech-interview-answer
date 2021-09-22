@@ -186,6 +186,7 @@ TCP(Transmission Control Protocol, 전송제어 프로토콜)
 UDP(User Datagram Protocol, 사용자 데이터그램 프로토콜)
 
 ## 트랜잭션
+https://d2.naver.com/helloworld/407507
 
 - 작업의 완전성을 보장해주는 것
 - 논리적인 작업 셋을 모두 완벽하게 처리하거나 또는 처리하지 못할 경우에는 원 상태로 복구해서 작업의 잉ㄹ부분만 적용되는 현상이 발행하지 않게 만들어주는 기능
