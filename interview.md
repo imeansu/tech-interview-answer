@@ -249,3 +249,11 @@ Commit 요청이 들어오면 Partical Commited 상태가 된다. 이후 Commit�
     - 동일한 노드의 개수일 때, depth를 최소화하여 시간 복잡도를 줄이는 것이 핵심 아이디어 (완전 이진 트리의 경우 처럼)
     - Java Collection의 ArrayList도 내부적으로 RBT, HashMap에서의 Separate Chaing에서도 사용
     - 구체적이 내용은 보강 필요!
+
+## 데이터베이스 키 종류
+
+- Candidate Key(후보키)
+- Primary Key(기본키)
+- Alternate Key(대체키)
+- Super Key(슈퍼키)
+- Foreign Key(외래키)
