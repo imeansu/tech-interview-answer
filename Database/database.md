@@ -69,6 +69,7 @@ DBMS의 특징
 출처: [https://velog.io/@cil05265/데이터베이스의-개요개념-기능-스키마DBMS-RDBMS](https://velog.io/@cil05265/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4%EC%9D%98-%EA%B0%9C%EC%9A%94%EA%B0%9C%EB%85%90-%EA%B8%B0%EB%8A%A5-%EC%8A%A4%ED%82%A4%EB%A7%88DBMS-RDBMS)
 
 ## 정규화
+https://github.com/JaeYeopHan/Interview_Question_for_Beginner/tree/master/Database#%EC%A0%95%EA%B7%9C%ED%99%94%EC%97%90-%EB%8C%80%ED%95%B4%EC%84%9C
 
 ### 배경
 
