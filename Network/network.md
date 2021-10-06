@@ -41,3 +41,24 @@ UDP(User Datagram Protocol, 사용자 데이터그램 프로토콜)
 - 검증 헤더와 조건부 요청
     - If-Modified-Since: Last-Modified
     - If-None-Match: ETag
+
+## 공인 IP와 사설 IP
+
+출처
+
+[https://brunch.co.kr/@sangjinkang/61](https://brunch.co.kr/@sangjinkang/61)
+
+### NAT(Network Address Translation)
+
+> 사설 IP를 공인 IP로 변경에 필요한 주소 변환 서비스
+라우터 등의 장비를 사용하여 다수의 사설 IP를 하나의 공인 IP 주소로 변환하는 기술
+IP 주소와 Port 번호로 구성된 NAT Forwarding Table을 보관하고 있고 이에 맞게 주소 변환
+> 
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/5e38bc18-f5f6-49c9-9720-2af24d56fcaa/Untitled.png)
+
+### NAT는 왜 필요한가?
+
+- 공인 IP 주소를 절약
+- 보안의 목적
+    - 내부망과 공개망 사이에 방화벽(firewall)을 운영하여 외부 공격으로부터 내부망을 지킴 (IP masquerading, 마스쿼레이딩)
