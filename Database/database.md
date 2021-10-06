@@ -173,8 +173,9 @@ https://github.com/JaeYeopHan/Interview_Question_for_Beginner/tree/master/Databa
 
 ## Locking
 
-출처: [https://medium.com/pocs/동시성-제어-기법-잠금-locking-기법-319bd0e6a68a](https://medium.com/pocs/%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-%EA%B8%B0%EB%B2%95-%EC%9E%A0%EA%B8%88-locking-%EA%B8%B0%EB%B2%95-319bd0e6a68a)
-         [https://sabarada.tistory.com/121](https://sabarada.tistory.com/121)
+출처
+[https://medium.com/pocs/동시성-제어-기법-잠금-locking-기법-319bd0e6a68a](https://medium.com/pocs/%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4-%EA%B8%B0%EB%B2%95-%EC%9E%A0%EA%B8%88-locking-%EA%B8%B0%EB%B2%95-319bd0e6a68a)
+[https://sabarada.tistory.com/121](https://sabarada.tistory.com/121)
 
 ### 트랜잭션과 Lock
 
