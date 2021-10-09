@@ -323,12 +323,10 @@ https://github.com/JaeYeopHan/Interview_Question_for_Beginner/tree/master/Databa
 
 - 인덱스로 설정하는 필드의 속성이 중요
 - title, author 이 순서로 인덱스를 설정한다면, title을 search하는 경우 index의 효과를 볼 수 있지만 author만으로 search하는 경우, index를 생성한 것이 소용 없어짐
+
 ### clustered index vs non-clustered index
-
 출처
-
 [https://gocoder.tistory.com/1826](https://gocoder.tistory.com/1826)
-
 [https://m.blog.naver.com/islove8587/220431192221](https://m.blog.naver.com/islove8587/220431192221)
 
 1. 클러스터드 인덱스
