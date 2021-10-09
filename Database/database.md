@@ -326,7 +326,7 @@ https://github.com/JaeYeopHan/Interview_Question_for_Beginner/tree/master/Databa
 
 ### clustered index vs non-clustered index
 출처
-[https://gocoder.tistory.com/1826](https://gocoder.tistory.com/1826)
+[https://gocoder.tistory.com/1826](https://gocoder.tistory.com/1826), 
 [https://m.blog.naver.com/islove8587/220431192221](https://m.blog.naver.com/islove8587/220431192221)
 
 1. 클러스터드 인덱스
