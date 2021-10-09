@@ -323,3 +323,23 @@ https://github.com/JaeYeopHan/Interview_Question_for_Beginner/tree/master/Databa
 
 - 인덱스로 설정하는 필드의 속성이 중요
 - title, author 이 순서로 인덱스를 설정한다면, title을 search하는 경우 index의 효과를 볼 수 있지만 author만으로 search하는 경우, index를 생성한 것이 소용 없어짐
+### clustered index vs non-clustered index
+
+출처
+
+[https://gocoder.tistory.com/1826](https://gocoder.tistory.com/1826)
+
+[https://m.blog.naver.com/islove8587/220431192221](https://m.blog.naver.com/islove8587/220431192221)
+
+1. 클러스터드 인덱스
+    - 인덱스를 생성할 때는 데이터 페이지 전체를 다시 정렬
+    - 인덱스 자체가 데이터 페이지. 인덱스 자체에 데이터가 포함
+    - 비클러스터드 인덱스보다 검색 속도는 빠르지만 입력/수정/삭제는 느림
+    - 테이블에 한 개만 생성 가능
+    - 30% 이내 사용 권장
+    - Primary key 등
+2. 비클러스터드 인덱스
+    - 별도의 페이지에 인덱스 테이블을 생성하여 데이터를 정렬
+    - 검색 속도는 느리지만, 데이터의 입력/수정/삭제가 더 빠르다
+    - 남용할 경우 시스템 성능을 떨어뜨리는 결과
+    - 3% 이내 사용 권장
