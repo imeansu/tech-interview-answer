@@ -62,3 +62,47 @@ IP 주소와 Port 번호로 구성된 NAT Forwarding Table을 보관하고 있�
 - 공인 IP 주소를 절약
 - 보안의 목적
     - 내부망과 공개망 사이에 방화벽(firewall)을 운영하여 외부 공격으로부터 내부망을 지킴 (IP masquerading, 마스쿼레이딩)
+
+## Cookie & Session
+
+HTTP는 비상태성(Stateless) 프로토콜로 상태 정보를 유지하지 않는다. 연결을 유지하지 않기 때문에 리소스 낭비가 줄어드는 것은 큰 장점이지만 통신할 때마다 매번 연결 설정을 해야 하며, 이전 요청과 현재 요청이 같은 사용자의 요청인지 알 수 없다는 단점이 존재한다. 쿠키와 세션을 통해서 HTTP의 Stateless한 문제점을 해결할 수 있다.
+
+[Untitled](https://www.notion.so/e24f461684e24e07a6bcbd65e6562fdc)
+
+### 저장 위치
+
+- 쿠키 : 클라이언트의 웹 브라우저가 지정하는 메모리 or 하드디스크
+- 세션 : 서버의 메모리에 저장
+
+### 만료 시점
+
+- 쿠키 : 저장할 때 expires 속성을 정의해 무효화 시키면 삭제될 날짜 정할 수 있음
+- 세션 : 클라이언트가 로그아웃하거나, 설정 시간동안 반응이 없으면 무효화 되기 때문에 정확한 시점을 알 수 없음
+
+### 리소스
+
+- 쿠키 : 클라이언트에 저장되고 클라이언트의 메모리를 사용하기 때문에 서버 자원을 사용하지 않음
+- 세션 : 세션은 서버에 저장되고, 서버 메모리로 로딩 되기 때문에 세션이 생길 때마다 리소스를 차지함
+
+### 용량 제한
+
+- 쿠키 : 클라이언트도 모르게 접속되는 사이트에 의하여 설정될 수 있기 때문에 쿠키로 인한 문제가 발생하는 걸 막고자 한 도메인 당 20개, 하나의 쿠키 당 4KB로 제한해 둠
+- 세션 : 클라이언트가 접속하면 서버에 의해 생성되므로 개수나 용량 제한 없음
+
+### Cookie
+
+- 사용 목적
+    - 세션관리 : Login, shopping cart, game score, or anything else the server should remember
+    - 개인화 : User preferences, themes, and other settings
+    - 트래킹 : Recording and analyzing user behavior
+- Secure
+    - Response Header 에 Secure=Secure; Secure 저장 (request에는 없음)
+    - HTTPS를 사용해야하만 전송한다
+    - sessionId만 가지고 변조가 가능하기 때문에 HTTPS만 전송 가능한 Secure 쿠키를 통해 보안성을 높일 수 있다
+- HttpOnly
+    - 웹브라우저에서 자바스크립트 `document.cookie` 등을 통해서 현재 쿠키 값을 확인 할 수 있다
+    - HttpOnly 설정을 하면 자바스크립트를 통해서 쿠키 값을 확인할 수 없게 한다
+- Path
+    - Path 옵션을 지정하면 해당 디렉토리와 그 하위 디렉토리에만 웹브라우저는 웹서버에게 전송
+- Domain
+    - 해당 도메인에만 동작할 수 있다. Path와 비슷함
