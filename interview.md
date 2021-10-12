@@ -459,3 +459,56 @@ Buddy, Slab allocator...
 - Restriction of HTTP Method: 메소드 형태가 제한 적
 - Absence of Standard: 표준의 부재
 - RDBMS와 어색한 관계 : RESTful 한 테이블 구조가 필요하게 되는데, 이것보다는 NoSQL쪽이 더 잘 맞는 추세
+
+## Blocking-NonBlocking-Synchronous-Asynchronous
+
+출처
+
+[http://homoefficio.github.io/2017/02/19/Blocking-NonBlocking-Synchronous-Asynchronous/](http://homoefficio.github.io/2017/02/19/Blocking-NonBlocking-Synchronous-Asynchronous/)
+
+### Blocking/NonBlocking
+
+> 호출되는 함수가 바로 리턴하느냐 마느냐가 관심사이다
+> 
+
+Blocking
+
+- 호출된 함수가 자신의 작업을 모두 마칠 때까지 호출한 함수에게 제어권을 넘겨주지 않고 대기하게 만든다
+
+NonBlocking
+
+- 호출된 함수가 바로 리턴해서 호출한 함수에게 제어권을 넘겨주고, 호출한 함수가 다른 일을 할 수 있는 기회를 줄 수 있다
+
+### Synchronous/Asynchronous
+
+> 호출되는 함수의 작업 완료 여부를 누가 신경 쓰냐 가 관심사이다
+> 
+
+Synchronous
+
+- 호출하는 함수가 호출되는 함수의 작업 완료 후 리턴을 기다리거나, 또는 호출되는 함수로 부터 바로 리턴을 받더라도 작업 완료 여부를 호출하는 함수 스스로 계속 확인하며 신경쓴다
+
+Asynchronous
+
+- 호출되는 함수에게 callback을 전달해서, 호출되는 함수의 작업이 완료되면 호출되는 함수가 전달받은 callback을 실행하고, 호출하는 함수는 작업 완료 여부를 신경쓰지 않는다
+
+### NonBlocking-Sync
+
+- 호출되는 함수는 바로 리턴하고, 호출하는 함수는 작업 완료 여부를 신경쓰는 것
+- 신경쓰는 방법이 기다리거나 물어보거나 두 가지가 있는데, NonBlocking 함수를 호출했다면 사실 기다릴 필요는 없고 물어보는 일이 남는다
+- NonBlocking 메서드 호출 후 바로 반환 받아서 다른 작업을 할 수 있게 되지만, 메서드 호출에 의해 수행되는 작업이 완료된 것은 아니며, 호출하는 메서드가 호출되는 메서드 쪽에 작업 완료 여부를 계속 문의
+
+### Blocking-Async
+
+- 별로 이점이 없어서 일부러 이 방식을 사용할 필요가 없음 (Blocking-Sync와 성능적 차이가 없지 않나...)
+- 의도하지 않게 Blocking-Async로 동작하는 경우가 있다. (원래는 N-A를 추구하다가 의도와는 다르게)
+    - 대표적인 케이스 - Node.js와 MySQL 조합
+    - Node.js 쪽에서 callback 지옥을 헤치면서 Async로 전진해와도, 결국 DB 작업 호출 시에는 MySQL에서 제공하는 드라이버를 호출하게 되는데, 이 드라이버가 Blocking 방식
+
+### I/O 멀티플렉싱 (I/O Multiplexing)
+
+출처: [https://brunch.co.kr/@myner/41](https://brunch.co.kr/@myner/41)
+
+- 입출력 다중화란 하나의 프로세스 혹은 스레드에서 입력과 출력을 모두 다룰 수 있는 기술
+- 각 클라이언트 마다 별도의 프로세스나 스레드를 생성하는 것이 아닌 하나의 스레드에서 다수의 클라이언트에 연결된 소켓(파일 디스크립)을 관리하고 소켓에 이벤트가 발생할 경우에만 별도의 스레드를 만들어 해당 이벤트를 처리하도록 구현
+- 입출력 함수는 여전히 블록킹으로 작동하겠지만, 입출력 함수를 호출하기 전에 어떤 파일에서 입출력이 준비가 되었는지 확인할 수 있다
