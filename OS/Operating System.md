@@ -253,7 +253,6 @@ Race condition
 - V() : signal(), 임계 구역에서 나올 때 수행 (자원 반납 알림, 대기 중인 프로세스를 깨우는 신호)
 
 ## 가상 메모리
-
 [https://wogh8732.tistory.com/395?category=807175](https://wogh8732.tistory.com/395?category=807175)
 
 > 다중 프로그래밍을 실현하기 위해서는 많은 프로세스들을 동시에 메모리에 올려두어야 한다
@@ -421,17 +420,11 @@ Race condition
     - gRPC (ProtocolBuffer) by Google
 
 ## 사용자 스레드 커널 스레드
-
 출처
-
 [https://velog.io/@taehee-kim-dev/사용자-수준-스레드-커널-수준-스레드](https://velog.io/@taehee-kim-dev/%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%88%98%EC%A4%80-%EC%8A%A4%EB%A0%88%EB%93%9C-%EC%BB%A4%EB%84%90-%EC%88%98%EC%A4%80-%EC%8A%A4%EB%A0%88%EB%93%9C)
-
 [https://m.blog.naver.com/whdgml1996/222076116487](https://m.blog.naver.com/whdgml1996/222076116487)
-
 [https://velog.io/@recordsbeat/스레드-도대체-무엇이길래](https://velog.io/@recordsbeat/%EC%8A%A4%EB%A0%88%EB%93%9C-%EB%8F%84%EB%8C%80%EC%B2%B4-%EB%AC%B4%EC%97%87%EC%9D%B4%EA%B8%B8%EB%9E%98)
-
 [https://medium.com/@unmeshvjoshi/how-java-thread-maps-to-os-thread-e280a9fb2e06](https://medium.com/@unmeshvjoshi/how-java-thread-maps-to-os-thread-e280a9fb2e06)
-
 [https://ahnyezi.github.io/os/OS-4/](https://ahnyezi.github.io/os/OS-4/)
 
 ### 사용자 수준 스레드
@@ -520,9 +513,6 @@ Seek TIme이 가장 큼. 스케줄링 알고리즘도 헤드의 이동 거리를
     - 장점: SSTF, SCAN 보다 응답시간의 편차가 적음, 특정 방향에서의 많은 요청으로 인해 반대 방향에 들어온 요청들에 대해 기아현상을 방지할 수 있음
 
 출처
-
 [https://limkydev.tistory.com/165?category=974040](https://limkydev.tistory.com/165?category=974040)
-
 [https://wansook0316.github.io/cs/os/2020/04/06/운영체제-정리-20-디스크-스케줄링-알고리즘.html](https://wansook0316.github.io/cs/os/2020/04/06/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EC%A0%95%EB%A6%AC-20-%EB%94%94%EC%8A%A4%ED%81%AC-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html)
-
 [https://eunhyejung.github.io/os/2018/07/30/operatingsystem-study17.html](https://eunhyejung.github.io/os/2018/07/30/operatingsystem-study17.html)
