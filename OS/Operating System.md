@@ -516,3 +516,58 @@ Seek TIme이 가장 큼. 스케줄링 알고리즘도 헤드의 이동 거리를
 [https://limkydev.tistory.com/165?category=974040](https://limkydev.tistory.com/165?category=974040)
 [https://wansook0316.github.io/cs/os/2020/04/06/운영체제-정리-20-디스크-스케줄링-알고리즘.html](https://wansook0316.github.io/cs/os/2020/04/06/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EC%A0%95%EB%A6%AC-20-%EB%94%94%EC%8A%A4%ED%81%AC-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html)
 [https://eunhyejung.github.io/os/2018/07/30/operatingsystem-study17.html](https://eunhyejung.github.io/os/2018/07/30/operatingsystem-study17.html)
+
+## 인터럽트
+출처
+fast campus 운영체제 - 인터럽트 란 / 이준희 강사님
+[https://velog.io/@adam2/인터럽트](https://velog.io/@adam2/%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8)
+
+> CPU가 프로그램을 실행하고 있을 때, 입출력 하드웨어 드으이 장치나 또는 예외상황이 발생하여 처리가 필요할 경우에 CPU에 알려서 처리하는 기술
+> 
+
+### 인터럽트 필요 이유
+
+- 선점형 스케쥴러 구현 :  프로세스 running 중에 스케쥴러 코드를 실행
+    - 타이머 인터럽트 (하드웨어로 부터 일정 시간마다 타이머 인터럽트를 운영체제에 알려줌)
+    - 운영체제가 타이머 인터럽트 발생 횟수를 기억해서 5번 타이머 인터럽트가 발생하면, 현재 프로세스를 다른 프로세스로 바꿔준다
+- IO Device와의 커뮤니케이션 : 저장매체에서 데이터 처리 완료시, 프로세스를 깨워야 함 (block → ready)
+- 예외 상황 핸들링 : 0으로 나누기(Divide-by-Zero Interrupt) 등
+
+### 인터럽드 종류
+
+- 내부 인터럽트
+    - Trap이라고 부르며, 주로 프로그램 내부에서 잘못된 명령 또는 잘못된 데이터 사용 시 발생
+        - 0 으로 나눴을 때
+        - 사용자 모드에서 허용되지 않은 명령 또는 공간 접근 시
+        - 계산 결과가 Overflow/Underflow 날 때
+- 외부 인터럽트
+    - 주로 하드웨어에서 발생
+        - 전원 이상
+        - 기계 문제
+        - 키보드 등 IO관련 이벤트
+        - Timer 이벤트
+- 소프트웨어 인터럽트 (시스템 콜 인터럽트)
+    - 프로그램 처리 중 명령의 요청에 의해 발생한 것 (SVC 인터럽트)
+    - 시스템 콜 실행을 위해서는 강제로 코드에 인터럽트 명령을 넣어, CPU에게 실행시켜야 한다
+        - 실제 코드
+        
+        ```c
+        mov eax, 1 // 시스템 콜 번호
+        mov ebx, 0 // 시스템 콜에 해당하는 인자값
+        int 0x80.  // 소프트웨어 인터럽트 명령 (system_call())
+        ```
+        
+        - 인터럽트 명령을 호출하면서 0x80 값을 넘겨줌 → CPU는 사용자 모드를 커널 모드로 바꿔줌 → IDT(Interrupt Descriptor Table)에서 0x80에 해당하는 (주소)함수를 찾아서 실행함 → system_call() 함수에서 eax로 부터 시스템 콜 번호를 찾아서, 해당 번호에 맞는 시스템 콜 함수로 이동 → 함수 실행 후 다시 사용자 모드로 변경
+
+### 인터럽트 발생 처리 과정
+
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/24e96a65-8fd9-401d-ae91-d06938fa2e3e/Untitled.png)
+
+- 관련 용어
+    - 인터럽트 핸들러
+        - 실제 인터럽트를 처리하기 위한 루틴으로 인터럽트 서비스 루틴이라고도 한다
+        - 운영체제의 코드 영역에는 인터럽트 별로 처리해야 할 내용이 이미 프로그램되어 있다
+    - 인터럽트 벡터
+        - 인터럽트 발생 시 처리해야 할 인터럽트 핸들러의 주소를 인터럽트 별로 보관하고 있는 테이블
+    - PCB
+        - 인터럽트 발생 시 수행 중이던 memory 주소, 레지스터 값, 하드웨어 상태 등 저장
