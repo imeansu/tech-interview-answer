@@ -461,9 +461,7 @@ Buddy, Slab allocator...
 - RDBMS와 어색한 관계 : RESTful 한 테이블 구조가 필요하게 되는데, 이것보다는 NoSQL쪽이 더 잘 맞는 추세
 
 ## Blocking-NonBlocking-Synchronous-Asynchronous
-
 출처
-
 [http://homoefficio.github.io/2017/02/19/Blocking-NonBlocking-Synchronous-Asynchronous/](http://homoefficio.github.io/2017/02/19/Blocking-NonBlocking-Synchronous-Asynchronous/)
 
 ### Blocking/NonBlocking
