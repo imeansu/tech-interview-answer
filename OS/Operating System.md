@@ -465,3 +465,64 @@ Race condition
 - OS는 C와 C++의 세상이다. OS에게 thread를 할당받기 위해서는 그들의 언어로 이야기 해주어야 한다. JVM은 JNI라는 통역사를 통해 자신에게 thread가 필요하다고 알려준다
 - Windows API 이용, 유닉스 계열은 Pthread → OS의 스케줄링 정책을 따름
 - 쓰레드의 구현 방식은 OS에 종속적이며 스케줄링 정책 또한 동일
+
+### 디스크 스케줄링 알고리즘
+
+**디스크 물리적 구조**
+
+- platter, track, sector & cylinder, spindle, arm
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/28982bad-1aa2-4778-b2a3-b90411739708/Untitled.png)
+    
+
+**디스크 접근 시간**
+
+Seek TIme이 가장 큼. 스케줄링 알고리즘도 헤드의 이동 거리를 줄이는 것이 가장 중요한 목표 
+
+- 탐색 시간(Seek Time)
+    - 디스크 헤드를 해당 실린더로 이동하는데 걸리는 시간
+- 회전 지연 시간(Rotational Latency Time)
+    - 디스크가 회전해서 읽고 쓰려는 섹터가 헤드 위치에 도달하기까지 걸리는 시간
+- 전송 시간(Transfer Time)
+    - 해당 섹터가 헤드 위치에 도달한 후 데이터를 실제로 섹터에 읽고 쓰는데 소요되는 시간
+1. FCFS(First Come First Served)
+    - 장점: 기법이 단순하며, 공평하게 요청을 처리
+    - 단점: 비효율적
+2. SSTF(Shortedst Seek Time First)
+    
+    현재 헤드에서 가장 가까운 트랙의 요청을 먼저 처리
+    
+    - 장점: Seek Time이 적다. 즉 트랙을 찾는 시간을 최소화, 처리량(Throughput)을 극대화
+    - 단점: 안쪽 및 바깥쪽에 있는 요청들은 기아 현상이 발생할 수도 있다. 응답 시간의 편차가 크다
+3. SCAN
+    
+    헤드셋의 진행방향에 있는 요청을 처리하고, 다시 반대 방향으로 틀어 반대방향에 있는 요청들을 처리
+    
+    - 장점: SSTF의 바깥쪽 트랙의 기아 가능성을 제거할 수 있고, 응답시간의 편차를 줄일 수 있다
+    - 단점: 양 쪽 끝 트랙이 가운데 위치한 트랙보다 대기 시간이 길어짐
+4. C-SCAN(Circular Scan)
+    
+    항상 한쪽 방향에서 반대방향으로 진행하며 트랙의 요청을 처리
+    
+    SCAN과 다르게 중간에 치고 들어오는 요청이 있어도 요청을 처리하지 않고 큐에 모았다가 일전에 요청한 것들을 다 처리한 후 처리
+    
+    - 장점: 응답시간의 편차가 매우 적음, SCAN보다 시간 균등성이 좋음
+    - 단점: 안쪽이나, 바깥쪽으로 처리할 요청이 없어도 헤드셋이 끝까지 이동하기 때문에 비효율적
+5. LOOK, C-LOOk
+    
+    SCAN과 C-SCAN을 보완. 요청이 진행 방향에서 더이상 없다면, 끝단까지 가지 않고 반대방향으로 가던가(SCAN), 다시 C-SCAN 처음으로
+    
+    - 장점: 불필요한 헤드 이동시간 제거
+    - 단점: 끝단까지 가야할지 말아야 할지 판단하는데 있어서 오버헤드 발생
+6. N-STEP SCAN
+    - SCAN 기법에 기초. 시작하기 전에 대기하고 있는 요청들을 우선적으로 처리
+    - 처리하는 과정 중에 요청이 들어오는 것들은 이후에 모아서, 반대방향으로 진행할 때 서비스
+    - 장점: SSTF, SCAN 보다 응답시간의 편차가 적음, 특정 방향에서의 많은 요청으로 인해 반대 방향에 들어온 요청들에 대해 기아현상을 방지할 수 있음
+
+출처
+
+[https://limkydev.tistory.com/165?category=974040](https://limkydev.tistory.com/165?category=974040)
+
+[https://wansook0316.github.io/cs/os/2020/04/06/운영체제-정리-20-디스크-스케줄링-알고리즘.html](https://wansook0316.github.io/cs/os/2020/04/06/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-%EC%A0%95%EB%A6%AC-20-%EB%94%94%EC%8A%A4%ED%81%AC-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%A7%81-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html)
+
+[https://eunhyejung.github.io/os/2018/07/30/operatingsystem-study17.html](https://eunhyejung.github.io/os/2018/07/30/operatingsystem-study17.html)
