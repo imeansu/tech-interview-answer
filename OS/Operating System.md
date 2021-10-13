@@ -184,15 +184,15 @@ indefinite postponement : 자원을 할당받지 못하고 계속 지연되고 �
     - 프로세스가 자원을 요구할 때, 시스템은 자원을 할당한 후에도 안정 상태로 남아있게 되는지 사전에 검사하여 교착 상태 회피
     - 안정 상태면 자원 할당, 아니면 다른 프로세스들이 자원 해지까지 대기
     
-**회피(avoidance)와 탐지(detection)의 차이**
-**avoidance**
-- considers worst case 
-- 최대 요구량까지 요구하는 최악의 경우에도 교착상태에 걸리지 않는 길이 있는가
-**detection**
-- considers most favorable case
-- Checks whether current state has deadlocked processes or not
-- Does not consider/respond to the (expected) states in the future
-- 최선의 경우, 현재 요청한 리소스만 할당 받으면 그 프로세스는 더이상 요청하지 않을 거야
+> **회피(avoidance)와 탐지(detection)의 차이**
+> **avoidance**
+> - considers worst case 
+> - 최대 요구량까지 요구하는 최악의 경우에도 교착상태에 걸리지 않는 길이 있는가
+> **detection**
+> - considers most favorable case
+> - Checks whether current state has deadlocked processes or not
+> - Does not consider/respond to the (expected) states in the future
+> - 최선의 경우, 현재 요청한 리소스만 할당 받으면 그 프로세스는 더이상 요청하지 않을 거야
 
 교착 상태를 탐지 & 획복
 
