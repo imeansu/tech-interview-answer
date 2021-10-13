@@ -341,3 +341,50 @@ https://github.com/JaeYeopHan/Interview_Question_for_Beginner/tree/master/Databa
     - 검색 속도는 느리지만, 데이터의 입력/수정/삭제가 더 빠르다
     - 남용할 경우 시스템 성능을 떨어뜨리는 결과
     - 3% 이내 사용 권장
+## 파티셔닝과 샤딩
+출처
+[https://nesoy.github.io/articles/2018-05/Database-Shard](https://nesoy.github.io/articles/2018-05/Database-Shard)
+[https://moonsbeen.tistory.com/27](https://moonsbeen.tistory.com/27)
+[https://galid1.tistory.com/797](https://galid1.tistory.com/797)
+[https://seokbeomkim.github.io/posts/partition-and-sharding/](https://seokbeomkim.github.io/posts/partition-and-sharding/)
+
+> DB 크기가 증가하며 VLDB(Very Large DBMS)가 등장했고 여러 테이블을 관리하며 생기는 성능 이슈를 해결하기 위해 파티셔닝과 샤딩이 나옴
+> 
+
+### 파티셔닝과 샤딩의 차이점
+
+- 샤딩과 파티셔닝 모두, 큰 데이터를 여러 서브셋으로 나누어 저장하는 기술
+- 파티셔닝은 큰 테이블을 하나의 인스턴스의 여러 테이블에 나누어 저장
+- 샤딩은 서브셋을 여러 인스턴스에 저장
+
+### 파티셔닝
+
+- 큰 테이블이나 인덱스를 관리하기 쉬운 크기로 분리하는 방법
+- 장점
+    - 가용성(Availability): 물리적인 노드 분리에 따라 전체 DB 내의 데이터 손상 가능성이 줄어들고, 데이터 가용성이 향상된다
+    - 관리 용이성(Manageability): 큰 테이블을 제거하여 관리를 쉽게 할 수 있다
+    - 성능(Performance): 특정 DML과 Query 성능을 향상시키며 대용량 데이터 write 환경에서 효율적
+- 단점
+    - 테이블 간 join 비용 증가
+    - 파티션 제약: 테이블과 인덱스를 별도로 파티션할 수 없다
+
+### 샤딩
+
+- 물리적으로 다른 데이터베이스에 데이터를 수평 분할 방식으로 분산 저장하고 조회하는 방법
+- 장점
+    - 쿼리를 여러 인스턴스로 분산하여 처리 → 성능과 확장성
+    - 데이터의 개수가 작아지고 따라서 인덱스의 개수도 작아져 성능이 향상된다
+    - 데이터 훼손 가능성이 줄어든다
+- 단점
+    - 타겟쿼리와 브로드캐스트 쿼리
+        - 데이터를 찾는 과정이 기존보다 복잡
+        - 쿼리에 적절한 샤드키가 포함되지 않는다면, 모든 노드들로 쿼리를 요청(브로드캐스트 쿼리)하고 이를 다시 취합하여 응답하게 된다
+        - 반대로 적절한 샤드키를 지정한다면, 해당 데이터가 존재하는 인스턴스를 찾아 타겟쿼리를 하게 된다
+    - 적절한 샤드키
+        - 샤드키를 잘못 선정하면 데이터가 한쪽으로 치우치게 되고 쿼리도 몰리게 됨
+    - 적절한 샤드키를 선정하여 데이터가 고르고 쿼리를 적절히 분배할 수 있도록 해야 함
+    - 두 개 이상의 샤드에 대한 JOIN 연산을 할 수 없다
+    - auto increment 등은 샤드 별로 달라질 수 있다
+    - last_insert_id() 값은 유효하지 않다
+    - shard key column 값은 update하면 안된다
+    - 하나의 트랜잭션에서 두 개 이상의 샤드에 접근할 수 없다
