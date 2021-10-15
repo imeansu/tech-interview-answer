@@ -25,3 +25,52 @@
 ### main
 
 - main이라는 이름은 JVM이 식별할 수 있는 키워드. 반드시 메인 메서드의 이름은 main
+
+## HashMap, TreeMap, LinkedHashMap 비교
+출처
+[https://soft.plusblog.co.kr/70](https://soft.plusblog.co.kr/70)
+
+### HashMap
+
+- 내부적으로 Entiry 배열을 만들어  관리
+- Key 값으로 넘겨준 객체의 해시 코드를 계산하여 Entry 배열의 접근 인덱스로 사용
+- 해시 충돌의 경우에 대비해 equals() 메소드까지 사용해서 Key 값이 정말 같은 경우에만 Value를 리턴
+- HashCode를 사용하기 때문에 순서가 뒤섞이게 된다. 다만, 해시 함수를 사용하기 때문에 O(1) 시간복잡도
+
+### TreeMap
+
+- Key-Value 쌍을 내부적으로 RedBlack Tree로 저장하여 관리 → Key 값을 기준으로 정렬된 상태를 유지
+- Comparator 인터페이스를 구현하면 사용자가 정렬된 순서를 조정할 수 있다
+
+RedBlack Tree
+- balanced binary search tree
+- O(logn) 시간 복잡도
+- 조건: Root Property(black), External (black), Internal(No Double Red), Depth(모든 리프노드에서 Black Depth는 같다 = 리프노드에서 루트노드까지 가는 경로에서 만나는 븍랙노드의 개수는 같다)
+- 삽입되는 노드의 색깔은 무조건 Red
+- Double Red 해결 : Restructuring, Recoloring
+출처: [https://zeddios.tistory.com/237](https://zeddios.tistory.com/237)
+
+### LinkedHashMap
+
+- 입력된 순서를 기억
+- 저장되는 각 항목은 Map.Entry 클래스를 구현한  Node 클래스로 내부에 before, after 멤버를 갖는 연결리스트 구조
+
+## HashMap, HashTable, ConcurrentHashMap 동기화 처리 방식
+출처: [https://tomining.tistory.com/169](https://tomining.tistory.com/169)
+
+### HashMap
+
+- Thread-Safe 하지 못함
+- Collections.synchronizedMap(hashMap) 등을 이용하여 동기화 처리 후 사용 가능
+
+### HashTable
+
+- 중복을 허용하지 않는다
+- 동기화 처리가 되어 있어 Thread-safe 하다
+- get(), put() 메서드에 synchronized
+- HashMap과 다르게 Key 값으로 null을 허용하지 않는다
+
+### ConcurrentHashMap
+
+- 동일 Entry에 추가 될 경우 해당 Entry에 대해서 synchronized를 적용
+- Entiry 배열 아이템 별로 동기화 처리 → MultiThread 환경에서 성능 향상
