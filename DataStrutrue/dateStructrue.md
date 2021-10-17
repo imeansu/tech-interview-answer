@@ -1,3 +1,19 @@
+## 복잡도 (Complexity)
+출처: [https://velog.io/@leobit/복잡도Complexity](https://velog.io/@leobit/%EB%B3%B5%EC%9E%A1%EB%8F%84Complexity)
+
+### 시간복잡도
+
+- 문제를 해결하는데 걸리는 시간과 입력한 함수 관계로, "연산의 횟수"(시행 횟수)를 센도
+
+### Big-O Notation (빅O 표기법)
+
+- 계수와 낮은 차수의 항을 제외시키는 방법
+
+### 공간복잡도
+
+- 프로그램 실행 후, 완료하는데 필요로 하는 자원 공간의 양
+- 시간과 공간은 반비례적 경향
+
 ## B-tree vs RedBlack tree
 출처
 [https://inuplace.tistory.com/376](https://inuplace.tistory.com/376)
