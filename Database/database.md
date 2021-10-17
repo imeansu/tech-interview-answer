@@ -68,6 +68,20 @@ DBMS의 특징
 
 출처: [https://velog.io/@cil05265/데이터베이스의-개요개념-기능-스키마DBMS-RDBMS](https://velog.io/@cil05265/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4%EC%9D%98-%EA%B0%9C%EC%9A%94%EA%B0%9C%EB%85%90-%EA%B8%B0%EB%8A%A5-%EC%8A%A4%ED%82%A4%EB%A7%88DBMS-RDBMS)
 
+## 무결성 제약조건
+
+데이터베이스에 저장된 데이터의 무결성을 보장하고 데이터베이스의 상태를 일관되게 유지하는 것
+
+1. 개체 무결성: 기본키는 null 값이나 중복값이 들어갈 수 없다
+2. 참조 무결성: 외래키 값은 NULL이거나 참조 릴레이션의 기본키 값과 동일해야 한다
+3. 도메인 무결성: 특정 속성의 값이 그 속성이 정의된 도메인에 속한 값이어야 한다
+4. 고유 무결성: 특정 속성에 대해 고유한 값을 가지도록 조건이 주어진 경우, 그 속성값은 모두 달라야 한다
+5. NULL 무결성: 특정 속성값에 NULL이 올 수 없다는 조건이 주어진 경우, 그 속성값은 NULL 값이 올 수 없다
+6. 키 무결성: 한 릴레이션에는 최소한 하나의 키가 존재해야 한다
+
+출처: [https://limkydev.tistory.com/161](https://limkydev.tistory.com/161), [https://kosaf04pyh.tistory.com/202](https://kosaf04pyh.tistory.com/202)
+
+
 ## 정규화
 https://github.com/JaeYeopHan/Interview_Question_for_Beginner/tree/master/Database#%EC%A0%95%EA%B7%9C%ED%99%94%EC%97%90-%EB%8C%80%ED%95%B4%EC%84%9C
 
