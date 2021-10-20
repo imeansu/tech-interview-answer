@@ -571,3 +571,54 @@ Commit 요청이 들어오면 Partical Commited 상태가 된다. 이후 Commit�
 3. Application Side Join
     - 어쩔 수 없이 Join 기능을 구현해야 하는 경우, 애플리케이션에서 Join로직을 처리
     - Join이 필요한 테이블의 수 만큼 NoSQL로의 request/response IO가 발생하지만, 비정규화에 비해서 스토리지 사용량은 감소
+
+## 트랙잭션 격리수준
+
+출처
+
+[https://dar0m.tistory.com/225](https://dar0m.tistory.com/225)
+
+[https://suhwan.dev/2019/06/09/transaction-isolation-level-and-lock/](https://suhwan.dev/2019/06/09/transaction-isolation-level-and-lock/)
+
+[https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=lyh1620&logNo=220790627073](https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=lyh1620&logNo=220790627073)
+
+### 격리 수준
+
+각각의 트랜잭션이나 여러개의 트랜잭션 간의 작업에 대해서 공유나 차단 등의 레벨을 조정하는 것
+
+Consistent Read
+- read(= SELECT) operation을 수행할 때 현재 DB 값이 아닌 특정 시점의 DB snapshot을 읽어오는 것
+- 각 쿼리를 실행할 때마다 실행한 쿼리의 log를 차곡차곡 저장한다. 그리고 나중에 consistent read를 할 때 이 log를 통해 특정 시점의 DB snapshot을 복구
+- 복구 비용이 발생하긴 하지만, lock을 활용하는 방식보다 높은 동시성 제공
+
+Gap lock
+- DB index record의 gap에 걸리는 lock
+- gap이란 index 중 DB에 실제 record가 없는 부분
+
+### REPEATABLE READ
+
+- 반복해서 read operation을 수행하더라도 읽어 들이는 값이 변화하지 않는 정도의 isolation을 보장
+- transaction이 처음으로 read operation을 수행한 시간을 기록
+- 그리고 그 이후에 모든 read마다 해당 시점을 기준으로 consistent read
+- Phantom Read 발생
+    - 내 생각에는 읽어오는 데이터는 consistent read로 과거이지만 다른 트랜잭션에서 a데이터를 삭제한 경우(S-lock은 사용자가 걸어야 걸림, non locking), 내가 읽는 데이터는 이전 데이터지만, 여기서 a 데이터에 대한 쿼리를 날리면 OK가 뜨는 대신 0 row affected가 뜬다 → 유령 읽기 (반대의 경우도 가능 c 데이터 삽입하고 내가 쿼리 날리면 2 row affected가 뜸)
+    - 출처: [https://postgresql.kr/blog/pg_phantom_read.html](https://postgresql.kr/blog/pg_phantom_read.html)
+- 일반적인 non-locking SELECT 이외에 lock을 사용하는 SELECT나 UPDATE, DELETE 쿼리를 실행할 때, REPEATABLE READ 트랜잭션은 gap lock을 활용
+
+### READ COMMITTED
+
+- commit 된 데이터만 보이는 수준의 isolation
+- 트랜잭션 read operation 마다 DB snapshot을 다시 뜬다
+- 실제 DB에는 아직 commit 되지 않은 쿼리도 적용된다. 따라서 commit된 데이터만을 읽어오기 위해서는 아직 commit 되지 않은 쿼리를 복구하는 과정이 필요하다. 즉, consistent read를 수행해야 한다
+
+### READ UNCOMMITTED
+
+- 기본적으로 READ COMMITTED와 동일. 대신, SELECT 쿼리를 실행할 때 아직 commit 되지 않은 데이터를 읽어올 수 있다 → dirty read
+- consistent read를 하지 않고 그냥 해당 시점의 DB를 읽으면 dirty read
+
+### SERIALIZABLE
+
+- 기본적으로 REPEATABLE READ 동일. 대신, SELECT 쿼리가 전부 SELECT ... FOR SHARE 로 자동으로 변경
+- 트랜잭션이 완료될 때까지 SELECT 문장이 사용된느 모든 데이터에 Shared Lock이 걸리는 계층
+- Repeatable Read - 다른 사용자는 트랜잭션 영역에 해당되는 데이터에 대한 수정 불가능
+- Serializable - 다른 사용자는 트랜잭션 영역에 해당되는 데이터에 대한 수정 및 입력 불가능
