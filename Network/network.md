@@ -151,3 +151,56 @@ HTTP는 비상태성(Stateless) 프로토콜로 상태 정보를 유지하지 �
     - Path 옵션을 지정하면 해당 디렉토리와 그 하위 디렉토리에만 웹브라우저는 웹서버에게 전송
 - Domain
     - 해당 도메인에만 동작할 수 있다. Path와 비슷함
+
+## TCP흐름/혼잡/오류 제어
+출처
+[https://velog.io/@mu1616/TCPIP-혼잡-제어](https://velog.io/@mu1616/TCPIP-%ED%98%BC%EC%9E%A1-%EC%A0%9C%EC%96%B4)
+
+### TCP 통신
+
+- reliable network를 보장할 수 있도록 하는 프로토콜
+- network congestion avoidance algorithm을 사용
+- reliable network를 보장한다는 것의 4가지 문제점
+    1. 손실 : packet이 손실 될 수 있는 문제
+    2. 순서 바뀜
+    3. Congestion : 네트워크가 혼잡한 문제
+    4. Overload : receiver가 overload 되는 문제
+
+### 흐름제어 (Flow Control)
+
+- 송신측과 수신측의 데이터 처리 속도 차이를 해결하기 위한 기법
+- Flow Control은 receiver가 packet을 지나치게 많이 받지 않도록 조절 - 손실, 그에 따른 불필요한 재전송
+- 기본 개념은 receiver가 sender에게 현재 자신의 상태를 feedback
+- 해결 방법
+    1. Stop and Wait : 매번 전송한 패킷에 대한 확인 응답을 받아야만 다음 패킷 전송
+    2. Sliding Window 
+        - 수신측에서 설정한 윈도우 크기 만큼 송신측에서 확인 응답이 없이 세그먼트를 전송할 수 있게 하여 데이터 흐름을 동적으로 조절하는 제어 기법
+        - 동작방식 : 먼저 윈도우에 포함되는 모든 패킷을 전송하고, 그 패킷들의 전달이 확인되는 대로 이 윈도우를 옆으로 옮김으로써 그 다음 패킷들을 전송
+        - Window : handshaking을 통해 수신 호스트의 receive window size에 자신의 end window size를 맞추게 된다
+
+### 혼잡제어 (Congestion Control)
+
+- 네트워크 내에 패킷의 수가 과도하게 증가하는 혼잡을 피하기 위해 송신측에서 보내는 데이터의 전송 속도를 강제로 줄임
+- 흐름 제어는 송신측과 수신측, 혼잡제어는 호스트와 라우터를 포함한 보다 넓은 관점
+- 해결방법
+    1. AIMD (Additive Increase / Multiplicative Decrease)
+        - 처음에 패킷을 하나씩 보내고 문제가 없으면 window 크기(단위 시간 내에 보내는 패킷의 수)를 1씩 증가시켜가며 전송
+        - 전송에 실패하면 윈도우 크기를 반으로 줄인다
+        - 문제점은 초기에 네트워크의 높은 대역폭을 사용하지 못하여 오랜 시간이 걸림
+    2. Slow Start (느린 시작)
+        - 패킷이 문제없이 도착하면 각각의 ACK 패킷마다 window size를 1씩 늘려준다. 즉, 한 주기가 지나면 window size가 2배로 된다
+        - AIMD에 반해 지수 함수 꼴로 증가. 대신, 혼잡 현상이 발생하면 window size를 1로 떨어뜨리게 된다
+        - 혼잡 현상이 발생하였던 window size의 절반까지는 이전처럼 지수 함수 꼴로 창 크기를 증가시키고 그 이후 부터는 완만하게 1씩 증가
+    3. Fast Retransmit (빠른 재전송) 
+        - 2, 3번 패킷 다음 5번이 오면 수신측에서는 순서대로 잘 도착한 마지막 패킷의 다음 순번을 ACK 패킷에 실어서 보냄 → 수신측은 받은 5,6,7 패킷에 대해 모두 ACK3을 보낸다
+        - 이런 중복 ACK을 3개 받으면 재전송
+        - 송신측은 자신이 설정한 타임아웃 시간이 지나지 않았어도 바로 해당 패킷을 재전송 할 수 있기 때문에 보다 빠른 전송률 유지
+        - 참고로, 송신측에서 설정한 타임아웃까지 ACK을 받지 못하면 혼잡이 발생한 것으로 판단하여 혼잡 회피
+    4. Fast Recovery (빠른 회복)
+        - 혼잡 상태가 되면 window size를 1로 줄이지 않고 반으로 줄이고 선형증가. 이 정책까지 적용하면 혼잡 상황을 한번 겪고 나서 부터는 순수한 AIMD 방식으로 동작
+- 혼잡제어 정책
+    1. TCP Tahoe
+    2. TCP Reno
+        - TCP Tahoe와 마찬가지로 Slow Start로 시작하여 임계ㅔ점을 넘어가면 AIMD 방식으로 변경
+        - TCP Tahoe와의 차이점은 바로 3 ACK Duplicated 와 타임아웃을 구분한다는 점이다. TCP Reno는 3 ACK Duplicated가 발생하면 빠른회복 방식을 사용
+        - 즉, 윈도우 크기를 1로 줄이는 것이 아니라 반으로 줄이고 윈도우 크기를 선형적으로 증가시킨다. 그리고 임계점을 줄어든 윈도우 값으로 설정
