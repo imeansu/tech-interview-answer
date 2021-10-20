@@ -573,13 +573,9 @@ Commit 요청이 들어오면 Partical Commited 상태가 된다. 이후 Commit�
     - Join이 필요한 테이블의 수 만큼 NoSQL로의 request/response IO가 발생하지만, 비정규화에 비해서 스토리지 사용량은 감소
 
 ## 트랙잭션 격리수준
-
 출처
-
 [https://dar0m.tistory.com/225](https://dar0m.tistory.com/225)
-
 [https://suhwan.dev/2019/06/09/transaction-isolation-level-and-lock/](https://suhwan.dev/2019/06/09/transaction-isolation-level-and-lock/)
-
 [https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=lyh1620&logNo=220790627073](https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=lyh1620&logNo=220790627073)
 
 ### 격리 수준
