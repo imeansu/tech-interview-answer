@@ -204,3 +204,37 @@ HTTP는 비상태성(Stateless) 프로토콜로 상태 정보를 유지하지 �
         - TCP Tahoe와 마찬가지로 Slow Start로 시작하여 임계ㅔ점을 넘어가면 AIMD 방식으로 변경
         - TCP Tahoe와의 차이점은 바로 3 ACK Duplicated 와 타임아웃을 구분한다는 점이다. TCP Reno는 3 ACK Duplicated가 발생하면 빠른회복 방식을 사용
         - 즉, 윈도우 크기를 1로 줄이는 것이 아니라 반으로 줄이고 윈도우 크기를 선형적으로 증가시킨다. 그리고 임계점을 줄어든 윈도우 값으로 설정
+
+## HTTP 1.1 vs 2.0
+출처
+[https://seokbeomkim.github.io/posts/http1-http2/](https://seokbeomkim.github.io/posts/http1-http2/)
+[https://velog.io/@zzzz465/HTTP1.1-2-3-의-차이점](https://velog.io/@zzzz465/HTTP1.1-2-3-%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90)\
+
+### HTTP 1.1
+
+1. 동작 방식
+    - 기본저긍로 Connection 한 개당 하나의 요청 처리, 이 때문에 동시에 여러개의 리소스를 주고 받는 것이 불가능하고 순차적으로 이루어짐
+2. 단점
+    - HOL(Head Of Line) Blocking - 특정 응답의 지연
+        - 네트워크에서 같은 큐에 있는 패킷이 첫 번째 패킷에 의해 지연될 때 발생
+        - HTTP에서의 HOL Blocking
+            - piplining : 하나의 connection을 통해 여러 개의 파일을 요청/응답 , 하지만 순차적으로 처리되어 HOL Blocking 발생
+        - TCP에서의 HOL Blocking
+            - TCP의 경우 패킷 LOSS가 발생하면 패킷을 재전송 - TCP를 사용하면 어쩔 수 없이 발생
+    - RTT(Round Trip TIme) 증가
+        - 3-way Handshake가 반복 - 불필요한 RTT증가와 네트워크 지연 초래
+    - 무거운 Header 구조
+        - 많은 메타 정보들이 저장 - 매 요청 마다 중복된 헤더값을 전송
+
+### HTTP 2
+
+1. Multiplexed Streams
+    - 여러 요청/응답을 병렬로 처리 (하나의 TCP 연결에 여러 스트림 사용)
+    - Connection 한 개로 동시에 여러 개의 메시지를 주고 받을 수 있으며 응답은 순서에 상관없이 Stream으로 주고 받는다. HTTP/1.1 의 Connection Keep-Alive, Pipelining의 개선 버전이라고 볼 수 있음
+2. Stream Prioritization
+    - 리소스 간의 의존관계에 따른 우선순위를 설정하여 리소스 로드 문제 해결
+3. Server Push
+    - 서버는 클라이언트가 요청하지 않은 리소스를 사전에 푸쉬를 통해 전송
+4. Header Compression
+    - 헤더 정보를 압축하기 위해 Header Table과 Huffman Encoding 기법을 사용하여 처리하는데 이를 HPACK 압축 방식이라 부르며 별도의 명세서(RFC 7531)로 관리
+    - 헤더의 중복을 검출해 내고 해당 테이블에서의 index값 + 중복되지 않은 Header 정보를 Huffman Encoding 방식으로 인코딩한 데이터 전송
