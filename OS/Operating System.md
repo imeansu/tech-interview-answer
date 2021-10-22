@@ -862,9 +862,7 @@ Kernel Memory
 Buddy, Slab allocator...
 
 ## 가상화
-
 출처
-
 [https://www.notion.so/65fc5413d93547319ac07051aac8c6cd](https://www.notion.so/65fc5413d93547319ac07051aac8c6cd)
 
 ### 가상화란?
@@ -915,3 +913,70 @@ Buddy, Slab allocator...
     - 컨테이너에는 게스트OS 나 가상하드웨어를 포함하지 않는다
     - 컨테이너는 애플리케이션과 애플리케이션 동작을 위한 라이브러리 등으로 구성되기 때문에 이를 각각 개별 서버처럼 사용이 가능하다
     - 오버헤드가 적어 가볍고 빠르다
+
+## 파일 시스템
+출처: fastcampus 이준희 강사님, 운영체제 엄교수님
+
+> 운영체제가 저장매체에 파일을 쓰기 위한 자료구조 또는 알고리즘
+> 
+
+### 파일 시스템이 만들어진 이유
+
+1. 블록
+    - 블록 단위로 관리 (보통 4KB)
+    - 블록마다 고유 번호를 부여해서 관리
+2. 파일
+    - 사용자가 각 블록 고유 번호를 관리하기 어려움: 추상적(논리적 객체 필요) ⇒ 파일
+    - 사용자는 파일단위로 관리, 각 파일에는 블록 단위로 관리
+3. 저장  방법
+    - 저장 매체에 효율적으로 저장
+    - 외부 단편화, 파일 사이즈 변경 문제로 불연속 공간에 파일 저장 기능 지원 필요
+4. 참고: 다양한 파일 시스템
+    - Windows: FAT, FAT32, NTFS: 블록 위치를 FAT라는 자료 구조에 기록 (Linked list)
+    - 리눅스(UNIX): ext2, ext3, ext4: 일종의 인덱스 블록 기법인 inode 방식 사용 (index)
+
+### 파일 시스템과 시스템 콜
+
+- 동일한 시스템 콜을 사용해서 다양한 파일 시스템 지원 가능토록 구현
+    - 파일을 실제로 어떻게 저장할지는 다를 수 있음
+    - 리눅스의 경우 ext4 외 NTFS, FAT32 파일 시스템 지원
+
+### inode 방식 파일 시스템
+
+- 파일 시스템 기본 구조
+    - 수퍼 블록: 파일 시스템 정보
+    - inode 블록: 파일 상세 정보, FCB(File Control Block)
+    - 데이터 블록: 실제 데이터
+- inode 와 파일
+    - '파일이름:inode' 로 파일 이름은 inode 번호와 매칭
+    - 파일 시스템에서는 inode 를 기반으로 파일 엑세스
+    - inode에 기반 메타 데이터 저장
+- inode 구조
+    - inode 기반 메타 데이터: 파일 권한, 소유자 정보, 파일 사이즈, 생성시간 등 시간 관련 저옵, 데이터 저장 위치 등
+    - Direct blocks - 12개의 4KB 블록
+    - Single indirect - 4KB 하나에 direct block pointer를 모아놓음 = 4KB / 4byte = 1024개
+    - Double indirect - single indirect pointer를 담고 있음
+    - Triple infirect - d 를 담고 잇음
+
+### 가상 파일 시스템 (Virtual File System)
+
+- Network 등 다양한 기기도 동일한 파일 시스템 인터페이스를 통해 관리 가능
+- 끊김없이 하나의 파일 시스템처럼 보이게하고 다 접근할 수 있도록
+
+### 기타
+
+- open-file table
+    - 파일을 open 할 때, FCB에 있는 메타 데이터를 읽어서 메타데이터를 읽어 kernel data structure에 저장
+    - 매번 메타 데이터를 찾아오지 않고 빠르게 접근할 수 있도록
+- ELF (Executable and Linking Format)
+    - Common standard file format for executables, ex) exe
+- Mounting
+    - 루트 파일 시스템에 다른 디바이스나 파일 시스템을 연결
+
+### 파일 시스템
+
+- UFS
+    - boot block, super block, indoe list, data blocks
+    - File access permissions : rwx 9개 + 앞에 3개 (set uid 등) = 12개
+    - Directory structure: File name - inode 구조
+    - ex2 : data blocks of a file placed in the same Cylinder group
