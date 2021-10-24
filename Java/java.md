@@ -102,6 +102,7 @@ RedBlack Tree
     - Intrinsic Lock = monitor lock = monitor : Java의 모든 객체는 lock을 갖고 있음
     - Synchronized 블록은 Intrinsic Lock을 이용해서, 스레디의 접근을 제어함
 - 구조적인 락(Structured Lock) vs 명시적인 락(Reentrant Lock)
+  출처: https://velog.io/@nunddu/Java-%EB%8F%99%EA%B8%B0%EB%A5%BC-%EB%B3%B4%EC%9E%A5%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95
     - 구조적인 락
         - synchronized 를 이용한 동기화
         - 블록 단위로 락의 획득과 해제
