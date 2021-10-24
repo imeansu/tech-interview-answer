@@ -74,3 +74,55 @@ RedBlack Tree
 
 - 동일 Entry에 추가 될 경우 해당 Entry에 대해서 synchronized를 적용
 - Entiry 배열 아이템 별로 동기화 처리 → MultiThread 환경에서 성능 향상
+
+## [Java] Thread 와 Thread Pool
+
+### Thread 구현
+
+- Runnable 인터페이스 구현
+    - 클래스를 인스턴스화 해서 Thread 생성자에 argument로 넘겨줘야 한다
+- Thread 클래스 상속
+    - 상속 받은 클래스 자체를 스레드로 사용할 수 있다
+
+### Thread 실행
+
+> 스레드의 실행은 run() 호출이 아닌 start() 호출로 해야 한다
+> 
+- 스레드를 이용한다는 건, JVM이 다수의 콜 스택을 번갈아가며 일처리를 하는 것
+- run()은 main()의 콜 스택 하나마 이용 - 그냥 run이라는 메소드를 호출하는 것 뿐이게 되는 것
+- start() 메소드를 호출하면, JVM은 알아서 스레드를 위한 클 스택을 새로 만들어주고 context switching을 통해 스레드답게 동작하도록 해준다
+
+### 동기화
+
+- synchronized 활용 : 임계 영역을 설정, 공유 자원 lock
+    - wait() 와 notify() 활용
+        - wait() : 스레드가 lock을 가지고 있으면, lock 권한을 반납하고 대기하게 만듦
+        - notify() : 대기 상태인 스레드에게 다시 lock 권한을 부여하고 수행하게 만듦
+- 고유 락 (Intricsic Lock)
+    - Intrinsic Lock = monitor lock = monitor : Java의 모든 객체는 lock을 갖고 있음
+    - Synchronized 블록은 Intrinsic Lock을 이용해서, 스레디의 접근을 제어함
+- 구조적인 락(Structured Lock) vs 명시적인 락(Reentrant Lock)
+    - 구조적인 락
+        - synchronized 를 이용한 동기화
+        - 블록 단위로 락의 획득과 해제
+        - 구조적인 락 a,b 가 있을 때, a 획득 → b 획득 → b 해제 → a 해제는 가능하지만 중간에 a해제 불가능
+    - 명시적인 락
+        - synchronized 와 동일하게 가시성과 상호 배제 기능 제공
+        - try 문에서 예외가 발생하면 락이 해제되지 않는 경우가 발생 → catch, finally 블록에서 락을 해제하는 것이 중요
+        - 스레드 간의 락을 획득하는 순서 → 공정한 방법과 불공정한 방법 지원
+        - 동시성을 보장해야 하는 코드가 블록 형태를 넘어서는 경우 쓰임
+
+### Thread Pool
+출처: [https://velog.io/@agugu95/자바와-쓰레드풀-쓰레드의-생성비용](https://velog.io/@agugu95/%EC%9E%90%EB%B0%94%EC%99%80-%EC%93%B0%EB%A0%88%EB%93%9C%ED%92%80-%EC%93%B0%EB%A0%88%EB%93%9C%EC%9D%98-%EC%83%9D%EC%84%B1%EB%B9%84%EC%9A%A9)
+
+- 병렬 작업 처리가 많아지면 스레드 개수 증가 → 스레드 생성 및 스케쥴링을 CPU가 바빠져서 메모리 많이 사용 → 성능 저하
+- 갑작스런 병렬 작업 처리가 많아질 때 스레드 풀을 이용
+- 스레드를 제한된 개수 만큼 정해 놓고 작업큐(Queue)에 들어오는 작업들을 하나씩 스레드가 맡아서 처리
+- 스레드 풀 생성/사용을 위해 Executors 클래스와 ExecutorService 인터페이스를 제공
+- Runnable 은 리턴값이 없고 Callable 은 리턴값이 있다
+- 단점 : 메모리 낭비, 노는 스레드
+- (노는) 스레드 풀 개선, Fork Join Thread Pool
+    - 작업을 최대한 균등하게 분배하기 위한 방식
+    - 첫 스레드는 작업을 가져와 자신의 로컬 큐에 할당, 분할
+    - 두번째 스레드가 가져올 작업이 없다면, 첫 스레드의 큐에 있는 분할된 작업을 훔쳐간다
+    - 나머지 스레드도 반복
