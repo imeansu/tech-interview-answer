@@ -20,28 +20,6 @@
 
 출처: [https://victorydntmd.tistory.com/291](https://victorydntmd.tistory.com/291)
 
-## RESTful
-
-로이 필딩은 HTTP의 주요 저자 중 한 사람으로 그 당시 웹(HTTP)설계의 우수성에 비해 제대로 사용되어지지 못하는 모습에 안타까워하며 웹의 장점을 최대한 활용할 수 있는 아키텍쳐로써 REST를 발표
-
-> URI 는 정보의 자원을 표현해야 한다
-자원에 대한 행위는 HTTP Method(GET, POST, PUT, DELETE 등)으로 표현한다
-> 
-
-### REST의 특징
-
-1. Uniform Interface : URI로 지정한 리소스에 대한 조작을 통일되고 한정적인 인터페이스로 수행
-2. Stateless : API 서버는 들어오는 요청만 단순 처리. 서비스의 자유도가 높아지고 서버에서 불필요한 정보를 관리하지 않음으로써 구현이 단순해짐
-3. Cacheable : REST는 HTTP 기존 웹표준 그대로 사용. HTTP 프로토콜 표준에서 사용하는 Last-Modified 태그나 E-Tag를 이용하면 캐싱 구현 가능
-4. Self-descriptiveness : REST API 메시지만 보고도 이를 쉽게 이해할 수 있는 자체 표현 구조
-5. Client - Server 구조 : REST 서버는 API 제공, 클라이언트는 사용자 인증이나 컨텍스트(세션, 로그인 정보)등을 직접 관리하는 구조로 각각의 역할이 확실히 구눕. 서로 개발해야 할 내용이 명확해지고 의존성 줄어짐
-6. 계층형 구조 : REST 서버는 다중 계층으로 구성. 보안, 로드 밸런싱, 암호화 계층을 추가해 구조상의 유연성을 둘 수 있고 PROXY, 게이트웨이 같은 네트워크 기반의 중간매체를 사용할 수 있음???
-
-### REST 단점
-
-- Restriction of HTTP Method: 메소드 형태가 제한 적
-- Absence of Standard: 표준의 부재
-- RDBMS와 어색한 관계 : RESTful 한 테이블 구조가 필요하게 되는데, 이것보다는 NoSQL쪽이 더 잘 맞는 추세
 
 ## Blocking-NonBlocking-Synchronous-Asynchronous
 출처
