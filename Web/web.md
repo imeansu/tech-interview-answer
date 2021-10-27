@@ -49,3 +49,44 @@
     - 다른 출처 간 통신의 보안을 좀 더 강화하고자 할 때 사용
     - 쿠키와 같은 인증정보를 포함시킴
         - 다른 출처 사이트로의 요청에 쿠키, 인증 정보를 포함시키고자 하면 → credentials: 'include' 옵션 추가
+## 웹서버 와 WAS(Web Application Server)
+출처
+[https://codechasseur.tistory.com/25](https://codechasseur.tistory.com/25)
+[https://gmlwjd9405.github.io/2018/10/27/webserver-vs-was.html](https://gmlwjd9405.github.io/2018/10/27/webserver-vs-was.html)
+
+### 웹서버
+
+> 웹 브라우저 클라이언트로부터 HTTP 요청을 받아들이고 HTML 문서와 같은 웹 페이지를 반환하는 컴퓨터 프로그램
+> 
+- 정적 컨텐츠를 제공하는 서버
+    - 정적 컨텐츠 : 단순 HTML, CSS, javascript, 이미지, 파일 등 즉시 응답 간으한 컨텐츠
+- 동적 컨텐츠를 요청 받으면 WAS에게 해당 요청을 넘겨주고, WAS에서 처리한 결과를 클라이언트에게 전달해주는 역할도 함
+- 웹서버 예 : Apache server, Nginx 등
+
+### WAS
+
+> HTTP 를 통해 컴퓨터나 장치에 애플리케이션을 수행해주는 미들웨어로서, 주로 동적 서버 컨텐츠를 수행하는 것으로 웹 서버와 구별되며, 대개 데이터베이스 서버와 같이 수행
+> 
+- WAS = Web Server + Web Container
+- Container 란 JSP, Servlet 을 실행시킬 수 있는 소프트웨어. 즉, WAS 는 JSP, Servlet 구동 환경 제공
+- 현재 WAS 가 가지고 있는 Web Server 도 정적인 컨텐츠를 처리하는 데 있어서 성능상 큰 차이가 없다
+- 주요 기능
+    - 프로그램 실행 환경과 DB 접속 기능 제공
+    - 여러 개의 트랜잭션 관리 기능
+    - 업무를 처리하는 비즈니스 로직 수행
+- WAS 예 : Tomcat, JBoss 등
+
+### 웹 서버를 쓰는 이유
+
+- 기능을 분리하여 서버 부하 방지
+    - 단순 정적 컨텐츠는 웹 서버, 앞단에서 빠르게 제공
+- 물리적으로 분리하여 보안 강화
+    - SSL 에 대한 암복호화 처리를 웹 서버에서 수행
+- 여러 대의 WAS 를 연결 가능
+    - Load Balancing 을 위해서 Web Server 사용
+    - fail over, fail back 처리에 유리
+    - 무중단 운영 및 장애 극복을 쉽게
+- 여러 웹 애플리케이션 서비스 가능
+    - 하나는 PHP, 하나는 JAVA 등
+- 기타
+    - 접근 허용 IP 관리, 2대 이상의 서버에서의 세션 관리 등도 Web Server 에서 처리하면 효율적
