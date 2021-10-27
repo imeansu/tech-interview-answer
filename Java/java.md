@@ -127,3 +127,28 @@ RedBlack Tree
     - 첫 스레드는 작업을 가져와 자신의 로컬 큐에 할당, 분할
     - 두번째 스레드가 가져올 작업이 없다면, 첫 스레드의 큐에 있는 분할된 작업을 훔쳐간다
     - 나머지 스레드도 반복
+
+## [Java] Exception 종류
+출처
+[https://wakestand.tistory.com/99](https://wakestand.tistory.com/99)
+[https://velog.io/@jsj3282/자바의-예외의-종류-3가지](https://velog.io/@jsj3282/%EC%9E%90%EB%B0%94%EC%9D%98-%EC%98%88%EC%99%B8%EC%9D%98-%EC%A2%85%EB%A5%98-3%EA%B0%80%EC%A7%80)
+[https://toneyparky.tistory.com/40](https://toneyparky.tistory.com/40)
+
+### Error
+
+- 런타임에서 실행 시 발생되며 전부 예측 불가능한 Unchecked Error 에 속한다
+- Exception 과 다르게 에러가 발생할 경우 코드를 고치지 않고서는 해결이 불가능
+- 프로그램 밖에서, 프로그램이 멈추어 버리는
+- ex) StackOverflowError, OutOfMemoryError 등
+
+### Exception
+
+1. Checked Exception
+    - 실행하기 전에 예측 가능한 예외
+    - 컴파일 시점에 예외를 catch 하는지 정적으로 확인. 만일 컴파일 시점에 예외 처리를 하지 않았다면 에러를 발생시킴
+    - SQLExcepion, FileNotFoundException 등
+2. Unchecked Exception
+    - 실행하고 난 후에 알 수 있는 예외
+    - RuntimeException 을 상속하면 Unchecked
+    - 스프링 트랜잭션 추상화에서 rollback 대상
+    - ArrayIndexOutOfBoundException, NullPointerException 등
