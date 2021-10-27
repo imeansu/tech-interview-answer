@@ -129,3 +129,25 @@ Asynchronous
 - 여러 개의 컨테이너가 하나의 애플리케이션으로 동작할 때, 이를 테스트 하려면 각 컨테이너를 하나씩 생성해야 한다
 - 여러개의 컨테이너로 구성된 애플리케이션을 구축하기 위해서 run 명령어를 여러번 사용할 수 있지만, 테스트 단계에서는 매번 run 명령어에 옵션을 설정해서 진행하기에 번거로움
 - 이를 위해 도커 컴포즈는 YAML 파일을 통해 여러 개의 컨테이너의 실행을 한 번에 관리하여 하나의 프로젝트처럼 다룰 수 있는 환경을 제공
+
+## 컴파일, 인터프리터
+출처
+[https://jins-dev.tistory.com/222](https://jins-dev.tistory.com/222)
+[https://velog.io/@jaeyunn_15/OS-Compiler-vs-Interpreter](https://velog.io/@jaeyunn_15/OS-Compiler-vs-Interpreter)
+
+### 컴파일
+
+- 프로그래밍 언어를 Runtime 이전에 기계어로 해석하는 작업 방식
+- 이때 원래의 소스를 원시 코드, 바뀐 코드를 목적 코드(Object Code) 라고 한다
+- 실행 시간이 빠름
+- 컴파일 에러 - 디버깅 가능
+- OS 및 빌드 환경에 종속적
+- C / C++ , Java (Byte Code 로 바꾸는 과정)
+
+### 인터프릿 (Interpret)
+
+- 런타임 이후에 Row 단위로 해석(Interpret) 하며 프로그램을 구동
+- 실행 시간은 느리며, 대신 런타임에 실시간 Debuggign 및 코드 수정이 가능
+- Javascript, Python 등 스크립트 언어, Java byte code interpret
+- 인터프리터는 해석을 위한 Virtual Machine 을 두고, 머신 위에서 Interpret 수행
+- 이 때, 해석의 기반이 되는 머신 들이 OS 환경들을 지원해줌으로써, OS 및 플랫폼에 종속되지 않는 프로그램 구동 가능
