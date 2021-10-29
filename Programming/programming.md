@@ -151,3 +151,28 @@ Asynchronous
 - Javascript, Python 등 스크립트 언어, Java byte code interpret
 - 인터프리터는 해석을 위한 Virtual Machine 을 두고, 머신 위에서 Interpret 수행
 - 이 때, 해석의 기반이 되는 머신 들이 OS 환경들을 지원해줌으로써, OS 및 플랫폼에 종속되지 않는 프로그램 구동 가능
+
+## AB Test
+출처
+[https://brunch.co.kr/@digitalnative/19](https://brunch.co.kr/@digitalnative/19)
+
+> 디지털 환경에서 전체 실사용자를 대상으로 대조군(Control Group)과 실험군(Experimental Group)으로 나누어서 어떤 특정한 UI나 알고리즘의 효과를 비교하는 방법론
+> 
+
+[사용자 분리 방법](https://www.notion.so/c7c8530bf2154268be5ae78650aa3236)
+
+### AB Test 결과 신뢰
+
+1. AA Test
+    - AB Test 전에 분산된 트래픽에 대해 동일한 Variation을 동시에 보여주고 차이가 있는지 없는지 먼저 확인 후에 차이가 없다면 AB Test를 진행해서 차이가 발생하는지 확인
+2. P-Value
+    - 통계 분석에서 가장 널리 활용되는 유의성 검증 방식
+    - 모집단을 샘플의 값을 활용하여 추정한다고 하였을 때, 샘플 수가 너무 적을 때 P-Value 값이 높아질 수 있음
+    - 유의 수준?
+
+### AB Test 를 해볼 수 있는 간단한 툴들
+
+스크립트 방식으로 특정 스크립트를 AB Test를 원하는 영역에 넣으면 선택한 실험 타입에 따라 AB Test가 진행
+
+- Optimizely - 다양한 통계적 분석값, 모바일 앱 AB Test를 지원
+- Google Optimize360 - Google Analytics 및 Tag Manager 와의 Intergration
