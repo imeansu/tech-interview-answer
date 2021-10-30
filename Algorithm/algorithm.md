@@ -73,3 +73,16 @@
 - heapify(array, n, p) - 재귀적으로 작은 부모 스왑하고 더 진행 , 초기화 - 끝 부모(n/2-1) 부터 heapify, extract(swap 0,i) 하고 0부터 다시 heapify
 - 시간 복잡도 : 최선, 최악, 평균 - O(N logN)
 - 특징: 가장 크거나 가장 작은 값을 구할 때 주로 쓰임, 퀵 정렬과 합병 정렬의 성능이 좋기 때문에 사용 빈도가 높진 않음
+
+## LRU Cache 구현
+출처 
+[https://doublesprogramming.tistory.com/254](https://doublesprogramming.tistory.com/254)
+[https://0th-lab.tistory.com/6](https://0th-lab.tistory.com/6)
+
+- Doubly Linked List + 해시 테이블
+- head 에 가까운 데이터일수록 최근에 사용한 데이터, tail에 가까울수록 가장 오랫동안 사용하지 않은 데이터
+- 삽입된 데이터를 사용하게 되면 head로 옮겨 우선순위를 높임
+- 해시 테이블은 이중 연결 리스트에서 빠른 검색을 위해 사용된다 (접근의 성능 개선)
+- 캐시에서 항복을 가져올 때, 해시 테이블을 참조해보고 없다면 캐시에 없다는 것을 의미
+- Java의 LinkedHashMap
+- O(1) 으로 구현하기 - 꼭 해보기! - [https://www.youtube.com/watch?v=WOaQfWqlV7A](https://www.youtube.com/watch?v=WOaQfWqlV7A)
