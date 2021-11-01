@@ -70,3 +70,71 @@ AOP: 관점 지향 프로그래밍
             - 반면, Interceptor는 Filter와 유사하게 HttpServletReqeust 등을 파라미터로 사용
         - 비스니스 단에서 세밀하게 조정하고 싶을 때
             - 로깅, 트랜잭션, 에러처리 등
+
+## Spring @Transactional
+출처
+[https://goddaehee.tistory.com/167](https://goddaehee.tistory.com/167)
+[https://mommoo.tistory.com/92](https://mommoo.tistory.com/92)
+[https://velog.io/@kdhyo/JavaTransactional-Annotation-알고-쓰자-26her30h](https://velog.io/@kdhyo/JavaTransactional-Annotation-%EC%95%8C%EA%B3%A0-%EC%93%B0%EC%9E%90-26her30h)
+[https://tecoble.techcourse.co.kr/post/2021-05-25-transactional/](https://tecoble.techcourse.co.kr/post/2021-05-25-transactional/)
+[https://mangkyu.tistory.com/154](https://mangkyu.tistory.com/154)
+
+> Spring 에서는 트랜잭션 처리를 지원하는데 그 중 어노테이션 방식으로 @Transactional 을 선언하여 사용하는 방법이 일반적이며, 선언적 트랜잭션이라 부른다
+> 
+- 트랜잭션을 담당하는 기술 코드를 완전히 분리시키는 것을 원함
+- 해당 로직을 클래스 밖으로 빼내서 별도의 모듈로 만드는 AOP를 고안 및 적용하게 되었고, 이를 적용한 트랜잭션 어노테이션을 지원하게 됨
+
+### Spring @Transactional 기능 제공 방식
+
+- JPA 의 객체 변경 감지는 transaction이 commit 될 때, 작동 → Spring 은 @Transactional 어노테이션을 선언한 메서드가 실행되기 전, transaction begin 코드를 삽입하여 메서드가 실행된 후, transaction commit 코드를 삽입하여, 객체 변경감지를 수행하게 유도
+- Spring 의 코드 삽입 방법은 크게 2가지
+    1. 바이트 코드 생성 (CGLIB 사용) - SpringBoot 기본 방식 → 굳이 interface 필요 없음
+    2. 프록시 객체 사용 → Spring 기본 방식 → interface 반드시 필요
+- 클래스, 메서드 위에 @Transactional 이 추가되면, 이 클래스에 트랜잭션 기능이 적용된 프록시 객체가 생성된다
+- 이 프록시 객체는 @Transactional 이 포함된 메소드가 호출 될 경우, PlatformTransactionManager 를 사용하여 트랜잭션을 시작하고, 정상 여부에 따라 Commit 또는 Rollback 한다
+
+### @Transactional 옵션
+
+1. isolation
+    
+    트랜잭션에서 일관성 없는 데이터 허용 수준, 격리 수준을 설정
+    
+    - READ_UNCOMMITED, READ_COMMITED, REPEATEABLE_READ, SERIALIZABLE
+2. propagation
+    
+    트랜잭션 동작 도중 다른 트랜잭션을 호출할 때, 전파 옵션
+    
+    - REQUIRED (Default) : 이미 진행중인 트랜잭션이 있다면 해당 트랜잭션 속성을 따로고, 진행 중이 아니라면 새로운 트랜잭션을 생성한다
+    - REQUIRES_NEW : 항상 새로운 트랜잭션을 생성한다. 이미 진행중인 트랜잭션이 있다면 잠깐 보류하고 해당 트랜잭션 작업을 먼저 진행한다
+    - SUPPORT : 이미 진행 중인 트랜잭션이 있다면 해당 트랜잭션 속성을 따르고, 없다면 트랜잭션을 설정하지 않는다
+    - NOT_SUPPORT : 이미 진행중인 트랜잭션이 있다면 보류하고, 트랜잭션 없이 작업을 수행한다
+    - MANDATORY : 이미 진행중인 트랜잭션이 있어야만, 작업을 수행한다. 없다면 Exception 을 발생시킨다
+    - NEVER : 트랜잭션이 진행중이지 않을 때 작업을 수행한다. 트랜잭션이 있다면 Exception 을 발생시킨다
+    - NESTED : 진행 중인 트랜잭션이 있다면 중첩된 트랜잭션이 실행되며, 존재하지 않으면 REQUIRED 와 동일하게 실행
+3. noRollbackFor
+    
+    특정 예외 발생 시 rollback 하지 않는다 / @Transactional(noRollbackFor = Exception.class)
+    
+4. rollbackFor
+    
+    특정 예외 발생 시 rollback 한다 / @Transactional(rollbackFor = Exception.class)
+    
+    @Transactional 은 기본적으로 Unchecked Exception, Error 만을 rollback 함. 모든 예외에 대해서 rollback을 진행하고 싶ㅇ르 경우 위와 같이 설정해야 함
+    
+5. timeout
+    
+    지정한 시간 내에 메소드 수행이 완료되지 않으면 rollback 한다 (-1일 경우 timeout 을 사용하지 않는다)
+    
+6. readOnly
+    
+    트랜잭션을 읽기 전용으로 설정한다 (Default = false)
+    
+    true 시 insert, update, delete 실행 시 예외 발생
+    
+    aop/tx 스키마로 트랜잭션 선언을 할 때는 이름 패턴을 이용해 읽기 전용 속성으로 만드는 경우가 많다. 보통 get이나 find 같은 이름의 메소드를 모두 읽기전용으로 만들어서 사용하면 편리하다
+    
+
+개인적인 궁금증 해결
+Auto Increment 옵션은 트랜잭션의 범위 밖에서 동작한다
+따라서 테스트 환경에서 @Transactional 로 롤백이 되어도 id 는 감소하지 않는다
+이유는 동시성 때문
