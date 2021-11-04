@@ -138,3 +138,44 @@ AOP: 관점 지향 프로그래밍
 Auto Increment 옵션은 트랜잭션의 범위 밖에서 동작한다
 따라서 테스트 환경에서 @Transactional 로 롤백이 되어도 id 는 감소하지 않는다
 이유는 동시성 때문
+
+## Spring boot Test
+공식 문서: [https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing)
+출처 
+[https://goddaehee.tistory.com/211?category=367461](https://goddaehee.tistory.com/211?category=367461)
+
+1. @SpringBootTest - 통합 테스트, 전체 - Bean 전체
+2. @WebMvcTest - 단위 테스트, MVC 테스트 - MVC 관련된 Bean
+3. @DataJpaTest - 단위 테스트, Jpa 테스트 - JPA 관련 Bean
+4. @RestClientTest - 단위 테스트, Rest API 테스트 - 일부 Bean
+5. @JsonTest - 단위 테스트, Json 테스트 - 일부 Bean
+
+### @SpringBootTest
+
+- 실제 운영 환경에서 사용될 클래스들을 통합하여 테스트
+- 단위 테스트와 같이 기능 검증을 위한 것이 아니라 Spring framework 에서 전체적으로 플로우가 제대로 동작하는지 검증하기 위해 사용
+- 장점
+    - 애플리케이션의 설정, 모든 Bean 을 모두 로드하기 때문에 운영환경과 가장 유사한 테스트가 가능
+    - 전체적인 Flow 를 쉽게 테스트 가능
+- 단점
+    - 애플리케이션의 설정, 모든 Bean 을 모두 로드하기 때문에 시간이 오래 걸리고 무겁다
+    - 테스트 단위가 크기 때문에 디버깅이 어려운 편
+1. 설정
+    - properties
+        - 프로퍼티를 {key=value} 형식으로 직접 추가할 수 있다
+        - 기본적으로 클래스 경로 상의 application.yml 등(.properties) 를 통해 설정을 수행하지만, 테스트를 위한 다른 설정이 필요하다면 다른 프로퍼티를 로드할 수 있다
+    - webEnvironment
+        - Mock
+            - WebApplicationContext 를 로드하여 내장된 서블릿 컨테이너가 아닌 Mock 서블릿을 제공
+            - 기본값은 Mock 서블릿을 로드하여 구동
+            - @AutoconfigureMockMvc 와 함께 사용하면 별다른 설정 없이 간편하게 MockMvc 를 사용한 테스트를 진행할 수 있다 (MockMvc 에 대한 추가 학습!!)
+        - RANDOM_PORT
+            - EmbeddedWebApplicationContext 를 로드하여 실제 서블릿 환경을 구성
+            - 임의의 port listen
+        - DEFINED_PORT
+            - RANDOM_PORT와 동일하게 실제 서블릿 환경을 구성
+            - 포트는 프로퍼티에서 지정한 포트를 listen
+        - NONE
+            - 기본적인 ApplicationContext 를 로드
+        - TestTestTemplate
+            - 추가 학습!!!
