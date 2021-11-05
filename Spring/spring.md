@@ -179,3 +179,67 @@ Auto Increment 옵션은 트랜잭션의 범위 밖에서 동작한다
             - 기본적인 ApplicationContext 를 로드
         - TestTestTemplate
             - 추가 학습!!!
+2. @MockBean
+    - Mock 객체를 빈으로 등록할 수 있음
+    - ApplicationContext에 Mock 객체를 빈으로 등록
+    - @MockBean 으로 선언된 객체와 같은 이름과 타입으로 이미 빈이 등록되어 있다면 해당 빈은 Mock 객체로 대체됨
+3. @Transactional
+    - 테스트 완료 후 자동으로 rollback 처리
+    - 하지만 WebEnvironment.RANDOM_PORT, DEFINED_PORT 를 사용하면 실제 테스트 서버는 별도의 스레드에서 테스트를 수행하기 때문에 트랜잭션이 롤백되지 않는다
+        - [https://stackoverflow.com/questions/64591281/transactional-annotation-in-spring-test](https://stackoverflow.com/questions/64591281/transactional-annotation-in-spring-test)
+        
+        <aside>
+        💡 On the contrary, if you launched a local instance of Spring using `@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)` for instance), it is detached from your unit test environment, hence:
+        
+        </aside>
+        
+4. @ActiveProfiles
+    - 프로파일 전략을 사용 중이라면 원하는 프로파일 환경값 설정이 가능
+
+### @WebMvcTest
+
+- MVC를 위한 테스트, 컨트롤러가 예상대로 동작하는 지 테스트하는데 사용된다
+- 다음 내용만 스탬하도록 제한 (보다 가벼운 테스팅이 가능)
+    - @Controller, @ControllerAdvice, @JsonComponent, Converter, GenericConverter, Filter, HandlerInterceptor
+- MockBean, MockMVC 를 자동 구성하여 테스트 가능하도록 한다
+- Spring Security 의 테스트도 지원
+- @WebMvcTest 를 사용하기 위해 테스트할 특정 컨트롤러 클래스를 명시하도록 한다
+
+**장점**
+
+1. WebApplication 관련된 Bean 들만 등록하기 때문에 통합 테스트보다 빠르다
+2. 통합 테스트를 진행하기 어려운 테스트를 진행 가능하다
+
+ex) 결제 모듈 API 를 콜하면 안되는 상황에서 Mock 을 통해 가짜 객체를 만들어 테스트 가능
+
+**단점**
+
+1. 요청부터 응답까지 모든 테스트를 Mock 기반으로 테스트하기 때문에 실제 환경에서는 제대로 동작하지 않을 수 있다
+
+### @DataJpaTest
+
+- JPA 관련된 설정만 로드
+- 설정이 정상적인지, JPA를 사용해서 데이터를 올바르게 조회, 생성, 수정, 삭제 하는지 등의 테스트가 가능하다
+- @Entiry 클래스를 스캔하여 스프링 데이터 JPA 저장소를 구성한다 (다른 컴포넌트를 스캔하지 않음)
+- @Transactional 어노테이션을 포함하고 있기 때문에 따로 선언하지 않아도 됨
+- 트랜잭션 기능이 필요하지 않으면 @Transactional(propagation = Propagation.NOT_SUPPORTED)
+- 기본적으로 in-memory embedded database 에 대한 테스트를 진행
+- real database 를 사용하고자 하는 경우 @AutoConfigureTestDatabase 사용
+- @AutoConfigureTestDatabase Default 설정 값은 Any 이다 (기본적으로 내장된 데이터소스를 사용)
+- @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) 을 지정하면 실제 DB도 사용 가능하며, @ActiveProfiles("test") 등의 프로파일 설정도 가능
+
+### @RestClientTest
+
+- REST 클라이언트 테스트가 가능
+- REST 통신의 JSON 형식이 예상대로 응답을 반환하는지 등 테스트
+- 예를 들면, Apache HttpClient 나 Spring 의 RestTemplate 을 사용하여 외부 서버에 웹 요청을 보내는 경우에 이에 응답할 Mock 서버를 만드는 것이라고 생각하면 된다
+- restTemplate 을 사용하는 부분을 Mocking 해서 결과가 정상적으로 넘어올거라는 가정하에 테스트 코드를 작성할 수도 있지만 → Dto 클래스와 API 의 Json 결과 포맷에 차이가 있는 등의 이슈를 확인할 수 없음
+    
+    출처: [https://jojoldu.tistory.com/341](https://jojoldu.tistory.com/341)
+    
+
+### @JsonTest
+
+- JSON serialization 과 deserialization 테스트를 편하게 할 수 있음
+- JSON 의 직렬화, 역직렬화를 수행하는 라이브러리인 Gson 과 Jackson 의 테스트 제공
+- (JacksonTester, GsonTest, BasicJsonTester)
