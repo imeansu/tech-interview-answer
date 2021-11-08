@@ -230,3 +230,205 @@ Asynchronous
     - 가독성이 중요한 이유는 문서로써의 역할을 하기도 하기 때문
 2. 모든 response에 대한 테스트를 진행
     - 정상적으로 작동하는 부분만 테스트하는 것이 아닌, 실수나 오류를 발견하고 이를 줄이고 수정하기 위해 작성
+
+- 목적
+    - 캐시 서버를 어떨 때 쓰는지 몇가지 사례로 개념 잡기
+    - 캐시 기본 개념 잠깐
+    - 대표적인 분산 캐시 redis vs memcached 비교하고 언제 어떤걸 쓰는 것이 좋은지
+    - 구체적인 레디스의 특징으로 대충 들어본 척 공부해본 척 할 수 있게
+    - 우리는 redis를 어떻게 쓰고 있는지
+- redis 개요
+    - 뜻 : REmote DIctionary Server (외부 키-벨류 서버)
+    - 사용처
+        - 캐시 서버
+        - Remote Data Store
+            - A서버, B서버, C서버에서 데이터를 공유하고 싶을 때
+        - 한 서버에서도 → Redis 자체가 Atomic을 보장(싱글 스레드)
+        - 주로 쓰는 곳
+            - 인증 토큰 등을 저장
+            - Ranking 보드
+            - 유저 API Limit
+                
+                ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8ff30899-5c73-482c-88d4-d6baa0ad851d/Untitled.png)
+                
+            - 잡 큐 - 비동기 작업 큐
+- 캐시 개념
+    - Cache는 나중에 올 요청의 결과를 미리 저장해두었다가 빠르게 서비스를 해주는 것
+        
+        ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ddb89aa3-1bc8-4fd2-8b02-a536f34ca25e/Untitled.png)
+        
+    
+    Cache 구조 
+    
+    - Look aside Cache
+        
+        ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/ba903931-d27e-43c6-9ca1-693ecc65d279/Untitled.png)
+        
+    - Write Back
+        
+        ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/1bfd3b9a-8b3b-4270-9a50-b5a35484188e/Untitled.png)
+        
+        `INSERT INTO table VALUES (1, "hello");
+         INSERT INTO table VALUES (2, "world");
+         INSERT INTO table VALUES (3, "!");`
+        
+        `INSERT INTO table VALUES (1, "hello"), (2, "world"), (3, "!");`
+        
+        Transaction, index 등 작업을 한번에
+        
+- 레디스 특징
+    - memcached 와 비교
+        
+        ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/4b058519-c14a-4deb-a012-11cd7a7a1ac9/Untitled.png)
+        
+        ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2271ce34-5322-4d6a-91eb-aeb9f9fba588/Untitled.png)
+        
+        공통점
+        
+        - In-Memory 기반
+        - key-value 형식의 NoSQL
+        
+        차이점
+        
+        1. Memcached
+            - 유일한 데이터 타입 String
+            - 멀티스레드를 지원하기 때문에 멀티프로세스코어를 사용할 수 있음 → 스케일업 유리 (redis 3.0 부터 클러스터링 지원으로 동일해짐)
+            - 트래픽이 몰려도 응답 속도 안정
+            - slab 메모리 할당자 → 메모리 파편화 문제가 덜함 but, 데이터 변경이 잦으면 또 생김
+            - 레디스에 비해 메타 데이터가 적다 → 메모리 사용량이 낮다
+            
+            > HTML과 같이 작고 변하지 않는 데이터 캐싱 
+            간단하게 사용
+            > 
+        2. redis
+            - 다양한 자료구조 Collection을 사용할 수 있음!! - 개발의 편의성, 개발의 난이도
+            - Snapshot - 특정시점의 데이터를 디스크에 저장, 장애시 복구
+            - 복제 - 여러개의 복제본, db 읽기를 확장하여 높은 가용성
+            - 트랜젝션 - ACID 지원
+            - Pub / Sub - 게시 / 구독
+            - 위치기반 데이터 타입 지원 (Geo) - 두 위치의 거리, 사이에 있는 요소 찾기 등 → 맛집, 길찾기 서비스
+            
+            > 하나의 서버 기능을 담당하는 등 나머지 경우
+            - 데이터 유형, 정렬 필요 시
+            - pub/sub, 백업, 복원, 복제 기능들을 쓰고 싶을 때
+            > 
+        
+- redis 자료구조
+    - String, set, hash, list, sorted-set
+        
+        ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/303a03bc-25c6-48cf-afbc-dfaeb5ce0ee4/Untitled.png)
+        
+    - 웹 애플리케이션 서버 로그 통합
+    - 날짜별 이벤트 페이지 방문 횟수 저장 - 날짜로 hash
+        - 일회성 데이터: 이벤트 페이지에 대한 호출 횟수 요구
+        - RDB에 필드 추가하면 속도 저하
+    - 좋아요 처리하기 - set
+    - 최근 조회 상품 목록 - list
+    - 유저 랭킹 - sorted set
+- 구조적 특징과 주의점
+    - 싱글스레드 - 시간 복잡도 - O(n) 관련 명령어 주의
+        - 단순 get / set 의 경우, 초당 10만 TPS 이상 가능
+        - processInputBuffer
+            
+            들어오는 데로 조합해보고 command가 완성되면 바로 실행
+            
+            하나라도 1초가 걸리면...
+            
+            ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e2bb2d75-f64a-4bdd-9891-92c765ff0293/Untitled.png)
+            
+        - 한번에 하나의 명령만 수행 가능 - 긴 시간이 필요한 명령을 수행하면 안됨
+        - 쓰면 안되는 명령어
+            - Keys
+            - FlushAll, FlushDB
+            - Delete Collections (리스트 전부 다 지우기)
+            - Get All Collections
+    - 메모리 관리: In-memory - 메모리 파편화, 가상 메모리
+        - Physical Memory 이상을 사용하면 문제가 발생
+            - Swap이 있다면 Swap 사용으로 해당 메모리 Page 접근시 마다 늦어짐
+            - Swap이 없으면 OOM(out of memory)으로 죽을 수 있음
+        - Maxmemory(논리적 메모리 사용량)를 설정하더라도 이보다 더 사용할 가능성이 큼
+            - 엄청 좋다는 Jemalloc 이라는 메모리 할당을 씀 (직접 처리할 수 없음)
+            - 그러나 페이지 단위로 할당이 되므로 RSS(실제 물리 메모리 사용량)이 더 높게
+            - 메모리 파편화 (3.x대 버전의 경우, 2GB → 11GB의 RSS 사용 경우 자주 발생)
+                
+                ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/722962f0-a7bf-43b4-820c-c52833ff03ff/Untitled.png)
+                
+                ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3f12f386-33be-488f-9d44-598681f31e83/Untitled.png)
+                
+    - replication (SPOF, 쓰기 담당/읽기 담당/백업용 - ProxySQL)
+        - Primary - Secondary
+        - Primary는 현재 메모리 상태를 저장하기 위해 Fork (저장해서 다른 노드로 보낼려고)
+            - copy on write로 바로 두 배는 아니지만 write될 수록
+        - 사진
+            
+            ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/15c2edef-f825-4543-8aa5-32b3899d4a39/Untitled.png)
+            
+            ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/958d38b6-3670-42df-ba91-90bd9e4a3589/Untitled.png)
+            
+            ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/240499c1-2881-4d98-989b-9fc85a3e7477/Untitled.png)
+            
+- 우리의 레디스
+    
+    A서버, B서버, C서버에서 데이터를 공유하고 싶다 - 추천 topic이 생성 되었다는 것을!
+    
+    - Consistency(정합성) 문제 (SseEmitter 객체들이...) → remote data store
+    - Distributed SSE with Spring SseEmitter and Redis Pub/Sub
+        
+        ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a6d4ba47-394c-4bf6-a6d6-5a20fe0e3481/Untitled.png)
+        
+    - [https://drive.google.com/file/d/1DFT24_D3yC8yDHzVVahoSkdhaTJdFjE_/view?usp=sharing](https://drive.google.com/file/d/1DFT24_D3yC8yDHzVVahoSkdhaTJdFjE_/view?usp=sharing)
+    - NoSQL 키 관리
+        - nosql에서 데이터를 조회하기 위한 가장 기본적인 값, 키 하나가 하나의 레코드 정의
+        - 단순성을 해치지 않으면서 정보를 효율적으로 저장 - 키 설계
+        - select * from user_profile where userid = 'kris'
+        - get user:profile:kris
+        - RDB 는 값에 부분 정보, nosql 은 키 정보에 부분 정보
+        
+        ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/83c25a4f-e780-4773-845a-089e3cad4df2/Untitled.png)
+        
+        ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/64bd462e-e169-4c46-820c-43067536575d/Untitled.png)
+        
+- 어려운 개념
+    - redis를 저장소처럼 - redis Persistent, RDB, AOF
+    - 메모리 제한으로 주기적 스케일 아웃, 백업 - redis cluster
+    - 부하 분산 - Constant hashing
+        - 서버가 하나 죽으면 딱 그 서버의 해시만 옮기면 됨
+        - modular hashing과 비교 (나머지로 해싱)
+            
+            ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c29179b4-e5be-4aab-a353-ac10d03ccfb5/Untitled.png)
+            
+            ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/60a7f18d-89da-4430-b639-80914e03d327/Untitled.png)
+            
+    - data grid - spring gemfire, hazlecast
+    
+- 클라우드 서비스 활용 - spof 등 해결
+- 키 관리
+- 질문
+    
+    멀티스레드 수평적 확장?
+    
+    - 스케일 아웃으로 spof 등 해결도 가능
+    
+    왜 Thread.sleep(100)을 하면 되는거지?
+    
+    redis pub / sub 원리
+    
+    vivox  이슈
+    
+- 출처
+    
+    이것이 레디스다 / 정경석
+    
+    [https://www.youtube.com/watch?v=Gimv7hroM8A&t=34s](https://www.youtube.com/watch?v=Gimv7hroM8A&t=34s)
+    
+    [https://www.youtube.com/watch?v=mPB2CZiAkKM](https://www.youtube.com/watch?v=mPB2CZiAkKM)
+    
+    [https://junghyungil.tistory.com/165](https://junghyungil.tistory.com/165)
+    
+    [https://down-develope.tistory.com/24](https://down-develope.tistory.com/24)
+    
+    [https://ssup2.github.io/theory_analysis/Consistent_Hashing/](https://ssup2.github.io/theory_analysis/Consistent_Hashing/)
+    
+    [https://www.geekyhacker.com/2019/08/07/distributed-sse-with-spring-sseemitter-and-redis-pub-sub/](https://www.geekyhacker.com/2019/08/07/distributed-sse-with-spring-sseemitter-and-redis-pub-sub/)
+    
+    [https://developer-mac.tistory.com/21](https://developer-mac.tistory.com/21)
