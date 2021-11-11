@@ -432,3 +432,67 @@ Asynchronous
     [https://www.geekyhacker.com/2019/08/07/distributed-sse-with-spring-sseemitter-and-redis-pub-sub/](https://www.geekyhacker.com/2019/08/07/distributed-sse-with-spring-sseemitter-and-redis-pub-sub/)
     
     [https://developer-mac.tistory.com/21](https://developer-mac.tistory.com/21)
+
+## OAuth2.0
+
+- OAuth는 표준 방식이다.
+    
+    OAuth는 인터넷 사용자들이 비밀번호를 제공하지 않고 다른 웹사이트 상의 자신들의 정보에 대해 웹사이트나 애플리케이션의 접근 권한을 부여할 수 있는 공통적인 수단으로서 사용 되는, 접근 위임을 위한 개방형 표준이다. (위키백과) (OpenID Authentication의 줄임말)
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/89801d52-751c-4af3-951a-44531bdcc700/Untitled.png)
+    
+- OpenID와 OAuth
+    
+    OAuth는 `인증` 프로토콜이 아닌, `인가` 프로토콜이다.
+    
+    인증과 인가
+    
+    - 인증(Authentication)은 사용자가 일정 권한이 있다는 것을 **아이디와 패스워드로 증명**하는 것
+    - 인가, 허가(Authorization)는 로그인 하고 나서, 내 계정으로만 할 수 있는 활동을 시도할 때 내 **로그인 정보를 보고 허용**해 주는 것
+    
+    ### OpenID와 OAuth
+    
+    OpenID도 인증을 위한 **표준 프로토콜**이고 **HTTP**를 사용한다는 점에서는 OAuth와 같다. 그러나 OpenID와 OAuth의 **목적은 다르다.**
+    
+    **OpenID의 주요 목적은 인증(Authentication)이지만, OAuth의 주요 목적은 허가(Authorization)이다.** 즉, OpenID를 사용한다는 것은 본질적으로 로그인하는 행동과 같다. OpenID는 OpenID Provider에서 사용자의 인증 과정을 처리한다. Open ID를 사용하는 여러 서비스(Relying Party)는 OpenID Provider에게 인증을 위임하는 것이다.
+    
+    물론 OAuth에서도 인증 과정이 있다. 가령 Facebook의 OAuth를 이용한다면 Facebook의 사용자인지 인증하는 절차를 Facebook(Service Provider) 처리한다. **하지만 OAuth의 근본 목적은 해당 사용자의 담벼락(wall)에 글을 쓸 수 있는 API를 호출할 수 있는 권한이나, 친구 목록을 가져오는 API를 호출할 수 있는 권한이 있는 사용자인지 확인하는 것이다.**
+    
+    OAuth를 사용자 인증을 위한 방법으로 쓸 수 있지만, OpenID와 OAuth의 근본 목적은 다르다는 것을 알아야 한다.
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/94464c23-0d53-4470-9a76-24c9c1e5e0c8/Untitled.png)
+    
+- OAuth는 왜 쓸까?
+    
+    간단한 방법은 고객한테 네이버 아이디/비밀번호를 받아서 네이버에 로그인을 해보면 된다. 근데 이 방법은 말도 안되는 방법이다. 그래서 `OAuth`가 생겼다.
+    
+    `OAuth`는 쉽게 말해서 다른 서비스의 회원 정보를 **안전하게** 사용하기 위한 방법이라고 생각하면 된다. 여기에서 **안전하게**의 주체는, 회원 정보를 가지고 있는 주체, 우리의 **고객**이다. 즉, 우리의 **고객이 안전하게** 다른 서비스의 정보를 우리 서비스에 건네주기 위한 방법이다.
+    
+    `모두에게 좋다`
+    
+    SNS 업체에서는 자사 서비스가 갖고 있는 고객의 정보를 다른 서비스에 활용할 수 있게 해주면(고객의 동의 하에)
+    
+    1. 다른 서비스가 자사 서비스에 `의존적이게 되어 입지가 더 커질` 것이고
+    2. `고객 역시` 이를 통해 더욱더 자사 서비스에 `의존적이게` 될 것이므로(예를 들어 많은 서비스에 페이스북 로그인을 통해서 회원가입을 하게 되면, 페이스북을 탈퇴하기가 더욱 힘들어 질 것이다)
+    
+    이는 매우 좋은 서비스 전략이 될 수 있다.
+    
+    마찬가지로 `써드 파티 서비스`(SNS를 이용하는 다른 서비스)의 경우, 대형SNS 기업의 고객 정보를 이용하면 `해당 SNS에서 제공해주는 많은 기능`을 통해 더욱더 좋은 서비스를 고객에게 제공할 수 있으므로 매우 좋은 전략이 될 수 있다.
+    
+    `고객`의 입장에서도 `가입이 편리`하고 이미 사용하고 있던 정보를 다른 서비스에서도 활용할 수 있어 좋다.
+    
+- Access Token
+    
+    ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/60485cf5-f38b-43fe-aa06-f5c36bab68eb/Untitled.png)
+    
+    OAuth의 핵심은 Access Token
+    
+    Access Token은 임의의 문자열 값이고 문자열의 내용은 토큰을 발급해준 서비스(구글)만 알 수 있다. 
+    
+    (JWT는 기본정보가 Base64 인코딩 되어 있어서 알 수 있지만)
+    
+    이 토큰을 이용해서 우리(waggle)는 고객의 정보를 해당 서비스(구글)에 요청할 수 있다
+    
+    Access Token의 존재 자체가 고객이 정보를 넘겨주는 것을 동의함의 징표라고 할 수 있다.
+    
+    이걸 위해 우린 OAuth를 사용!
